@@ -1,6 +1,9 @@
 <template>
   <p>Camera:{{ cx }},{{ cy }},{{ cz }}, OrbitControls:{{ ox }},{{ oy }},{{ oz }}, Resize:{{ test }}</p>
-  <button @click="go">up</button>
+  <button @click="moveCameraAndTarget('F')">Forward</button>
+  <button @click="moveCameraAndTarget('B')">Backward</button>
+  <button @click="moveCameraAndTarget('L')">Left</button>
+  <button @click="moveCameraAndTarget('R')">Right</button>
   <div class="container" ref="container"></div>
 </template>
 <script lang="ts" setup>
@@ -10,6 +13,7 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader"
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
+import * as TWEEN from '@tweenjs/tween.js';
 
 const cx = ref(0);
 const cy = ref(0);
@@ -31,10 +35,20 @@ const renderer = new THREE.WebGLRenderer({
 const container = ref()
 let controls: OrbitControls | null = null;
 
+// 创建坐标系
+var axesHelper = new THREE.AxesHelper(50);
+scene.add(axesHelper);
+// 创建一个球体几何体
+var geometry = new THREE.SphereGeometry(0.5, 32, 32);
+var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
+var sphere = new THREE.Mesh(geometry, material);
+// 将球体添加到场景中
+scene.add(sphere);
+
 // Initialize the environment
 const Initialize = () => {
   // Set camera position 设置相机位置
-  camera.position.set(4, 11, -17);
+  camera.position.set(-14, 7, -6);
   scene.add(camera)
   // Create a sky sphere 创建天空球
   const skyGeo = new THREE.SphereGeometry(1000, 60, 60);
@@ -71,9 +85,9 @@ const Initialize = () => {
   })
 
   // Add parallel light 设置平行光
-  const light = new THREE.DirectionalLight(0xffffff, 1)
-  light.position.set(-100, 100, 10)
-  scene.add(light)
+  const light = new THREE.DirectionalLight(0xffffff, 1);
+  light.position.set(-100, 100, 10);
+  scene.add(light);
 
   // Add model 载入模型
   const loader = new GLTFLoader();
@@ -81,11 +95,15 @@ const Initialize = () => {
   dracoLoader.setDecoderPath("/draco/")
   loader.setDRACOLoader(dracoLoader)
   loader.load("/glb/glbfile.glb", (gltf) => {
-    const isLand = gltf.scene
-    isLand.scale.set(100, 100, 100);
-    isLand.rotation.y = -Math.PI / 2; // Rotate 90 degrees
-    scene.add(isLand)
+    const model = gltf.scene;
+    model.scale.set(100, 100, 100);
+    model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
+    model.position.set(-14, -5, 15);
+    scene.add(model);
   })
+
+  // fog
+  // scene.fog = new THREE.Fog(0xffffff, 50, 150);
 }
 
 // 更新相机和渲染器
@@ -100,14 +118,15 @@ const updateCameraAndRenderer = () => {
 
 // 渲染
 const render = () => {
+  TWEEN.update();
   renderer.render(scene, camera)
   requestAnimationFrame(render)
   cx.value = Math.round(camera.position.x)
   cy.value = Math.round(camera.position.y)
   cz.value = Math.round(camera.position.z)
-  ox.value = Math.round((controls as any).target.x)
-  oy.value = Math.round((controls as any).target.y)
-  oz.value = Math.round((controls as any).target.z)
+  ox.value = Math.round((controls as OrbitControls).target.x)
+  oy.value = Math.round((controls as OrbitControls).target.y)
+  oz.value = Math.round((controls as OrbitControls).target.z)
 }
 
 // 页面加载完毕执行
@@ -117,8 +136,12 @@ onMounted(() => {
   // Add controller
   controls = new OrbitControls(camera, container.value)
   // Damping effect
-  controls.enableDamping = true
-
+  controls.enableDamping = true;
+  controls.maxDistance = 20;
+  controls.minDistance = 10;
+  controls.addEventListener('change', function () {
+    camera.position.y = camera.position.y < 5 ? 5 : camera.position.y;
+  });
   // createVideo()
   container.value.appendChild(renderer.domElement)
   render()
@@ -146,31 +169,73 @@ window.addEventListener('resize', function () {
 //   vector.unproject(camera);
 
 //   // 设置 OrbitControls 的 target
-//   (controls as any).target.set(vector.x, vector.y, vector.z);
+//   (controls as OrbitControls).target.set(vector.x, vector.y, vector.z);
 // });
 
 //测试用前进方法
-const go = () => {
-  var distance = 1;
+const moveCameraAndTarget = (directionName: string) => {
+  var distance = 2;
   var oriDirection = new THREE.Vector3();
   camera.getWorldDirection(oriDirection);
-  var direction = new THREE.Vector3(oriDirection.x, 0, oriDirection.z);
+  var direction = new THREE.Vector3(0, 0, 0);
+
+  switch (directionName) {
+    case 'F':
+      direction.set(oriDirection.x, 0, oriDirection.z)
+      break;
+    case 'B':
+      direction.set(-oriDirection.x, 0, -oriDirection.z)
+      break;
+    case 'L':
+      direction.set(oriDirection.z, 0, -oriDirection.x);
+      break;
+    case 'R':
+      direction.set(-oriDirection.z, 0, oriDirection.x);
+      break;
+  }
+console.log(direction)
+console.log(direction.multiplyScalar(distance))
 
   // 计算新的相机位置
   var newPosition = new THREE.Vector3();
-  newPosition.copy(camera.position); // 开始时，新位置就是相机当前的位置
-  newPosition.add(direction.multiplyScalar(distance)); // 向前移动相机
+  newPosition.copy(camera.position);
+  newPosition.add(direction.multiplyScalar(distance));
+  console.log("---相机---")
+  console.log(camera.position)
+  console.log(newPosition)
+  console.log("------")
 
-  // 设置新的相机位置
-  camera.position.copy(newPosition);
+  // console.log(newPosition.length(), (controls as OrbitControls).maxDistance)
+  // if (newPosition.length() > (controls as OrbitControls).maxDistance) {
+  //   return;
+  // }
 
   // 计算新的固定点位置
   var newTarget = new THREE.Vector3();
-  newTarget.copy((controls as any).target); // 开始时，新固定点就是当前的固定点
-  newTarget.add(direction.multiplyScalar(distance)); // 向前移动固定点
+  newTarget.copy((controls as OrbitControls).target);
+  newTarget.add(direction.multiplyScalar(distance));
+  console.log("---球---")
+  console.log((controls as OrbitControls).target)
+  console.log(newTarget)
+  console.log("------")
 
-  // 设置新的固定点位置
-  (controls as any).target.copy(newTarget);
+  // 设置新的相机位置和固定点位置(包括固定点实体球)
+  new TWEEN.Tween(camera.position)
+    .to(newPosition, 300)
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate(() => {
+      camera.position.set(camera.position.x, camera.position.y, camera.position.z);
+    })
+    .start();
+  (controls as OrbitControls).target.copy(newTarget);
+  // sphere.position.copy(newTarget);
+  new TWEEN.Tween(sphere.position)
+    .to(newTarget, 300) // 使用球体的新位置
+    .easing(TWEEN.Easing.Quadratic.InOut)
+    .onUpdate(() => {
+      sphere.position.set(sphere.position.x, sphere.position.y, sphere.position.z);
+    })
+    .start();
 }
 
 
