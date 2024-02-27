@@ -193,8 +193,8 @@ const moveCameraAndTarget = (directionName: string) => {
       direction.set(-oriDirection.z, 0, oriDirection.x);
       break;
   }
-console.log(direction)
-console.log(direction.multiplyScalar(distance))
+  console.log(direction)
+  console.log(direction.multiplyScalar(distance))
 
   // 计算新的相机位置
   var newPosition = new THREE.Vector3();
