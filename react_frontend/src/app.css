@@ -1,0 +1,30 @@
+.app_layout {
+    min-height: 100vh;
+}
+
+.app_sider {
+    display: block;
+}
+
+.app_header {
+    display: none;
+}
+
+.app_menu {
+    user-select: none;
+}
+
+/* 当设备宽度大于 768px 时，sider 隐藏，header 显示 */
+@media (min-width: 768px) {
+    .app_sider {
+        display: none;
+    }
+
+    .app_header {
+        display: flex;
+        align-items: center;
+        position: sticky;
+        top: 0;
+        z-Index: 1;
+    }
+}
