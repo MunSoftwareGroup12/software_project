@@ -1,6 +1,6 @@
-# Team 12 Software Engineering Project
+# Group 12 Software Engineering Project
 
-This repository contains the software engineering project developed by Team 12.
+This repository contains the software engineering project developed by Group 12.
 
 ## Directory Structure
 
