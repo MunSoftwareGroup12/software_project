@@ -23,6 +23,7 @@ export default function MapView() {
   const containerRef = useRef(null);
   const controlsRef = useRef(null);
   const sphereRef = useRef(null);
+  const sphereTest = useRef(null);
 
   useEffect(() => {
     console.log("useEffect")
@@ -79,11 +80,32 @@ export default function MapView() {
         sceneRef.current.add(model);
       })
 
-      // Add a sphere geometry
+      // Add a sphere geometry(as camera target)
       var geometry = new THREE.SphereGeometry(0.5, 32, 32);
       var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
       sphereRef.current = new THREE.Mesh(geometry, material);
       sceneRef.current.add(sphereRef.current);
+
+      creatLocation(3, 5, -3);
+
+      let testarr = [
+        { x: 9.5, y: 6.2, z: -7.7 },
+        { x: 8, y: 5.3, z: -3.2 },
+        { x: 6.1, y: 4.3, z: -1.4 },
+        { x: 5.8, y: 3.4, z: -12.2 },
+        { x: 4.7, y: 2.9, z: -3.6 },
+        { x: 3.9, y: 2.4, z: -7 },
+        { x: 3.9, y: 2.7, z: -2.8 },
+        { x: 3.8, y: 2.2, z: -5.8 },
+        { x: 3, y: 1.4, z: -12 },
+        { x: 1, y: 0.9, z: -5.4 },
+        { x: -1.6, y: -0.7, z: -12.5 },
+        { x: -2.3, y: -0.8, z: -8.7 },
+        { x: -4, y: -1, z: -5 },
+        { x: -4.1, y: -1.4, z: -1.4 }
+
+      ]
+      creatLocationArray(testarr)
 
       // Initialize the controller
       controlsRef.current = new OrbitControls(cameraRef.current, containerRef.current)
@@ -163,36 +185,49 @@ export default function MapView() {
     let dir = direction.multiplyScalar(distance)
     // 计算新的相机位置
     var newPosition = new THREE.Vector3();
-    console.log(dir)
     newPosition.copy(cameraRef.current.position);
-    console.log(newPosition.x, newPosition.y, newPosition.z)
     newPosition.add(dir);
-    console.log(newPosition.x, newPosition.y, newPosition.z)
 
     // 计算新的固定点位置
     var newTarget = new THREE.Vector3();
     newTarget.copy(controlsRef.current.target);
-    console.log(newTarget.x, newTarget.y, newTarget.z)
     newTarget.add(dir);
-    console.log(newTarget.x, newTarget.y, newTarget.z)
 
     // 设置新的相机位置和固定点位置(包括固定点实体球)
     new TWEEN.Tween(cameraRef.current.position)
       .to(newPosition, 300)
       .easing(TWEEN.Easing.Quadratic.InOut)
-      .onUpdate(() => {
-        cameraRef.current.position.set(cameraRef.current.position.x, cameraRef.current.position.y, cameraRef.current.position.z);
-      })
       .start();
     controlsRef.current.target.copy(newTarget);
     new TWEEN.Tween(sphereRef.current.position)
-      .to(newTarget, 300) // 使用球体的新位置
+      .to(newTarget, 300)
       .easing(TWEEN.Easing.Quadratic.InOut)
-      .onUpdate(() => {
-        sphereRef.current.position.set(sphereRef.current.position.x, sphereRef.current.position.y, sphereRef.current.position.z);
-      })
       .start();
   }, []);
+
+  const creatLocation = useCallback((x, y, z) => {
+    // Add a sphere geometry
+    var geometry = new THREE.SphereGeometry(0.3, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    sphereTest.current = new THREE.Mesh(geometry, material);
+    sphereTest.current.position.set(x, y, z)
+    sceneRef.current.add(sphereTest.current);
+  })
+  const changeTest = useCallback((x, y, z) => {
+    sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
+    console.log(sphereTest.current.position)
+  })
+
+
+  const creatLocationArray = useCallback((location) => {
+    let geometry = new THREE.SphereGeometry(0.3, 32, 32);
+    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    for (let i = 0; i < location.length; i++) {
+      let sphere = new THREE.Mesh(geometry, material);
+      sphere.position.set(location[i].x, location[i].y, location[i].z);
+      sceneRef.current.add(sphere);
+    }
+  })
 
   const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), []);
 
@@ -203,6 +238,18 @@ export default function MapView() {
       <button onClick={() => { throttledMove('B') }}>Backward</button>
       <button onClick={() => { throttledMove('L') }}>Left</button>
       <button onClick={() => { throttledMove('R') }}>Right</button>
+      <button onClick={() => { changeTest(1, 0, 0) }}>x+</button>
+      <button onClick={() => { changeTest(-1, 0, 0) }}>x-</button>
+      <button onClick={() => { changeTest(0, 1, 0) }}>y+</button>
+      <button onClick={() => { changeTest(0, -1, 0) }}>y-</button>
+      <button onClick={() => { changeTest(0, 0, 1) }}>z+</button>
+      <button onClick={() => { changeTest(0, 0, -1) }}>z-</button>
+      <button onClick={() => { changeTest(0.1, 0, 0) }}>``x+</button>
+      <button onClick={() => { changeTest(-0.1, 0, 0) }}>``x-</button>
+      <button onClick={() => { changeTest(0, 0.1, 0) }}>``y+</button>
+      <button onClick={() => { changeTest(0, -0.1, 0) }}>``y-</button>
+      <button onClick={() => { changeTest(0, 0, 0.1) }}>``z+</button>
+      <button onClick={() => { changeTest(0, 0, -0.1) }}>``z-</button>
       <div className="container" ref={containerRef}></div>
     </div>
   );
