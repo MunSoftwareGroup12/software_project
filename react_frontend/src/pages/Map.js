@@ -22,15 +22,18 @@ export default function MapView() {
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
   const controlsRef = useRef(null);
+  const raycasterRef = useRef(null);
+  const mouseRef = useRef(null);
   const sphereRef = useRef(null);
   const sphereTest = useRef(null);
 
   useEffect(() => {
     console.log("useEffect")
     let animationFrameId;
+
     // Initialize the environment
-    const Initialize = () => {
-      console.log("Initialize");
+    const InitializeEnv = () => {
+      console.log("InitializeEnv");
       // Initialize the scene
       sceneRef.current = new THREE.Scene();
 
@@ -52,33 +55,54 @@ export default function MapView() {
       })
       skyGeo.scale(1, 1, -1)
       const sky = new THREE.Mesh(skyGeo, skyMat)
-      sceneRef.current.add(sky)
+      //sceneRef.current.add(sky)
 
       // Load environment texture
-      const hdrLoader = new RGBELoader()
-      hdrLoader.loadAsync("/hdr/050.hdr").then((texture) => {
-        texture.mapping = THREE.EquirectangularReflectionMapping;
-        sceneRef.current.background = texture
-        sceneRef.current.environment = texture
-      })
+      // const hdrLoader = new RGBELoader()
+      // hdrLoader.loadAsync("/hdr/050.hdr").then((texture) => {
+      //   texture.mapping = THREE.EquirectangularReflectionMapping;
+      //   sceneRef.current.background = texture
+      //   sceneRef.current.environment = texture
+      // })
 
       // Add parallel light
       const light = new THREE.DirectionalLight(0xffffff, 1);
       light.position.set(-100, 100, 10);
       sceneRef.current.add(light);
 
+      // Initialize the controller
+      controlsRef.current = new OrbitControls(cameraRef.current, containerRef.current)
+      controlsRef.current.enableDamping = true;
+      controlsRef.current.maxDistance = 20;
+      controlsRef.current.minDistance = 10;
+      controlsRef.current.addEventListener('change', function () {
+        cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
+      });
+
+      // Initialize the mouse controll
+      raycasterRef.current = new THREE.Raycaster();
+      mouseRef.current = new THREE.Vector2();
+
+      // Add renderer to container
+      containerRef.current.appendChild(renderer.domElement);
+
+    }
+
+    // Initialize the extra objects in environment
+    const InitializeObject = () => {
+      console.log("InitializeObject");
       // Add model
-      const loader = new GLTFLoader();
-      const dracoLoader = new DRACOLoader();
-      dracoLoader.setDecoderPath("/draco/")
-      loader.setDRACOLoader(dracoLoader)
-      loader.load("/glb/glbfile.glb", (gltf) => {
-        const model = gltf.scene;
-        model.scale.set(100, 100, 100);
-        model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
-        model.position.set(-14, -5, 15);
-        sceneRef.current.add(model);
-      })
+      // const loader = new GLTFLoader();
+      // const dracoLoader = new DRACOLoader();
+      // dracoLoader.setDecoderPath("/draco/")
+      // loader.setDRACOLoader(dracoLoader)
+      // loader.load("/glb/glbfile.glb", (gltf) => {
+      //   const model = gltf.scene;
+      //   model.scale.set(100, 100, 100);
+      //   model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
+      //   model.position.set(-14, -5, 15);
+      //   sceneRef.current.add(model);
+      // })
 
       // Add a sphere geometry(as camera target)
       var geometry = new THREE.SphereGeometry(0.5, 32, 32);
@@ -89,34 +113,25 @@ export default function MapView() {
       creatLocation(3, 5, -3);
 
       let testarr = [
-        { x: 9.5, y: 6.2, z: -7.7 },
-        { x: 8, y: 5.3, z: -3.2 },
-        { x: 6.1, y: 4.3, z: -1.4 },
-        { x: 5.8, y: 3.4, z: -12.2 },
-        { x: 4.7, y: 2.9, z: -3.6 },
-        { x: 3.9, y: 2.4, z: -7 },
-        { x: 3.9, y: 2.7, z: -2.8 },
-        { x: 3.8, y: 2.2, z: -5.8 },
-        { x: 3, y: 1.4, z: -12 },
-        { x: 1, y: 0.9, z: -5.4 },
-        { x: -1.6, y: -0.7, z: -12.5 },
-        { x: -2.3, y: -0.8, z: -8.7 },
-        { x: -4, y: -1, z: -5 },
-        { x: -4.1, y: -1.4, z: -1.4 }
-
+        { id: "001", x: 9.5, y: 6.2, z: -7.7 },
+        { id: "002", x: 8, y: 5.3, z: -3.2 },
+        { id: "003", x: 6.1, y: 4.3, z: -1.4 },
+        { id: "004", x: 5.8, y: 3.4, z: -12.2 },
+        { id: "005", x: 4.7, y: 2.9, z: -3.6 },
+        { id: "006", x: 3.9, y: 2.4, z: -7 },
+        { id: "007", x: 3.9, y: 2.7, z: -2.8 },
+        { id: "008", x: 3.8, y: 2.2, z: -5.8 },
+        { id: "009", x: 3, y: 1.4, z: -12 },
+        { id: "010", x: 1, y: 0.9, z: -5.4 },
+        { id: "011", x: -1.6, y: -0.7, z: -12.5 },
+        { id: "012", x: -2.3, y: -0.8, z: -8.7 },
+        { id: "013", x: -4, y: -1, z: -5 },
+        { id: "014", x: -4.1, y: -1.4, z: -1.4 }
       ]
       creatLocationArray(testarr)
 
-      // Initialize the controller
-      controlsRef.current = new OrbitControls(cameraRef.current, containerRef.current)
-      controlsRef.current.enableDamping = true;
-      controlsRef.current.maxDistance = 20;
-      controlsRef.current.minDistance = 10;
-      controlsRef.current.addEventListener('change', function () {
-        cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
-      });
-      containerRef.current.appendChild(renderer.domElement);
     }
+
     // Update the camera and renderer
     const updateCameraAndRenderer = () => {
       console.log("updateCameraAndRenderer");
@@ -129,11 +144,32 @@ export default function MapView() {
       // Update renderer's size
       renderer.setSize(width, (width * 0.4));
     };
+
+    // Click event
+    const onClick = (event) => {
+      let rect = renderer.domElement.getBoundingClientRect();
+      mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+      mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
+      // 更新射线
+      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+
+      // 获取被射线穿过的物体
+      let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
+
+      // 如果有被射线穿过的物体，打印第一个物体的信息
+      if (intersects.length > 0) {
+        console.log(intersects[0].object.userData);
+      }
+    }
+
     // Render
     const render = () => {
       console.log("render");
       TWEEN.update();
+
       renderer.render(sceneRef.current, cameraRef.current);
+      // Request for next animation frame
       animationFrameId = requestAnimationFrame(render);
       {
         let { x, y, z } = cameraRef.current.position;
@@ -145,10 +181,13 @@ export default function MapView() {
       }
     };
 
-    Initialize();
+    InitializeEnv();
+    InitializeObject();
     updateCameraAndRenderer();
     // Listen for window size change event
     window.addEventListener('resize', updateCameraAndRenderer);
+    // Listen for the click event
+    window.addEventListener('click', onClick);
     render();
 
     return () => {
@@ -157,8 +196,30 @@ export default function MapView() {
       cancelAnimationFrame(animationFrameId);
       controlsRef.current.removeEventListener('change');
       window.removeEventListener('resize', updateCameraAndRenderer);
+      window.removeEventListener('click', onClick);
     };
   }, []);
+
+
+  const creatLocation = useCallback((x, y, z) => {
+    // Add a sphere geometry
+    var geometry = new THREE.SphereGeometry(0.3, 32, 32);
+    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    sphereTest.current = new THREE.Mesh(geometry, material);
+    sphereTest.current.position.set(x, y, z)
+    sceneRef.current.add(sphereTest.current);
+  }, [])
+
+  const creatLocationArray = useCallback((location) => {
+    let geometry = new THREE.SphereGeometry(0.3, 32, 32);
+    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    for (let i = 0; i < location.length; i++) {
+      let sphere = new THREE.Mesh(geometry, material);
+      sphere.position.set(location[i].x, location[i].y, location[i].z);
+      sphere.userData.id = location[i].id;
+      sceneRef.current.add(sphere);
+    }
+  }, [])
 
   const moveCameraAndTarget = useCallback((directionName) => {
     console.log("moveCameraAndTarget");
@@ -205,31 +266,12 @@ export default function MapView() {
       .start();
   }, []);
 
-  const creatLocation = useCallback((x, y, z) => {
-    // Add a sphere geometry
-    var geometry = new THREE.SphereGeometry(0.3, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-    sphereTest.current = new THREE.Mesh(geometry, material);
-    sphereTest.current.position.set(x, y, z)
-    sceneRef.current.add(sphereTest.current);
-  })
+  const throttledMove = useCallback(() => { throttle(moveCameraAndTarget, 300) }, [moveCameraAndTarget]);
+
   const changeTest = useCallback((x, y, z) => {
     sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
     console.log(sphereTest.current.position)
-  })
-
-
-  const creatLocationArray = useCallback((location) => {
-    let geometry = new THREE.SphereGeometry(0.3, 32, 32);
-    let material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-    for (let i = 0; i < location.length; i++) {
-      let sphere = new THREE.Mesh(geometry, material);
-      sphere.position.set(location[i].x, location[i].y, location[i].z);
-      sceneRef.current.add(sphere);
-    }
-  })
-
-  const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), []);
+  }, [])
 
   return (
     <div>
