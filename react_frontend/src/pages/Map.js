@@ -12,6 +12,8 @@ const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing 抗锯齿
   logarithmicDepthBuffer: true, // Logarithmic depth buffer 深度缓冲器
 });
+renderer.outputEncoding = THREE.sRGBEncoding; // 开启sRGB编码
+renderer.toneMapping = THREE.ACESFilmicToneMapping; // 开启HDR渲染
 export default function MapView() {
   //temp
   const [cord, setCord] = useState({ x: 0, y: 0, z: 0 });
@@ -30,6 +32,8 @@ export default function MapView() {
   useEffect(() => {
     console.log("useEffect")
     let animationFrameId;
+    // Flag whether the selected ui should be updated
+    let needUpdate = false;
 
     // Initialize the environment
     const InitializeEnv = () => {
@@ -37,40 +41,27 @@ export default function MapView() {
       // Initialize the scene
       sceneRef.current = new THREE.Scene();
 
-      // Add coordinate system
-      var axesHelper = new THREE.AxesHelper(50);
-      sceneRef.current.add(axesHelper);
-
       // Add camera
       let width = document.documentElement.clientWidth;
       cameraRef.current = new THREE.PerspectiveCamera(75, width / (width * 0.4), 0.1, 2000);
       cameraRef.current.position.set(-14, 7, -6);
       sceneRef.current.add(cameraRef.current)
 
-      // Add a sky sphere
-      const skyGeo = new THREE.SphereGeometry(1000, 60, 60);
-      const skyTex = new THREE.TextureLoader().load("/images/sky.jpg")
-      const skyMat = new THREE.MeshBasicMaterial({
-        map: skyTex
+      //Load environment texture
+      const hdrLoader = new RGBELoader()
+      hdrLoader.loadAsync("/hdr/sky03.hdr").then((texture) => {
+        texture.mapping = THREE.EquirectangularReflectionMapping;
+        sceneRef.current.background = texture;
+        sceneRef.current.environment = texture;
+        renderer.toneMappingExposure = 0.8;
       })
-      skyGeo.scale(1, 1, -1)
-      const sky = new THREE.Mesh(skyGeo, skyMat)
-      //sceneRef.current.add(sky)
 
-      // Load environment texture
-      // const hdrLoader = new RGBELoader()
-      // hdrLoader.loadAsync("/hdr/050.hdr").then((texture) => {
-      //   texture.mapping = THREE.EquirectangularReflectionMapping;
-      //   sceneRef.current.background = texture
-      //   sceneRef.current.environment = texture
-      // })
+      // Add default parallel light
+      // const light = new THREE.DirectionalLight(0xffffff, 1);
+      // light.position.set(-100, 100, 10);
+      // sceneRef.current.add(light);
 
-      // Add parallel light
-      const light = new THREE.DirectionalLight(0xffffff, 1);
-      light.position.set(-100, 100, 10);
-      sceneRef.current.add(light);
-
-      // Initialize the controller
+      // Initialize the Orbit controller
       controlsRef.current = new OrbitControls(cameraRef.current, containerRef.current)
       controlsRef.current.enableDamping = true;
       controlsRef.current.maxDistance = 20;
@@ -79,30 +70,42 @@ export default function MapView() {
         cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
       });
 
-      // Initialize the mouse controll
+      // Initialize the mouse controller
       raycasterRef.current = new THREE.Raycaster();
       mouseRef.current = new THREE.Vector2();
 
       // Add renderer to container
       containerRef.current.appendChild(renderer.domElement);
-
     }
 
     // Initialize the extra objects in environment
     const InitializeObject = () => {
       console.log("InitializeObject");
-      // Add model
-      // const loader = new GLTFLoader();
-      // const dracoLoader = new DRACOLoader();
-      // dracoLoader.setDecoderPath("/draco/")
-      // loader.setDRACOLoader(dracoLoader)
-      // loader.load("/glb/glbfile.glb", (gltf) => {
-      //   const model = gltf.scene;
-      //   model.scale.set(100, 100, 100);
-      //   model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
-      //   model.position.set(-14, -5, 15);
-      //   sceneRef.current.add(model);
-      // })
+
+      // Add coordinate system
+      var axesHelper = new THREE.AxesHelper(50);
+      sceneRef.current.add(axesHelper);
+
+      // // Add a sky sphere
+      // const skyGeo = new THREE.SphereGeometry(1000, 60, 60);
+      // const skyTex = new THREE.TextureLoader().load("/images/sky.jpg")
+      // const skyMat = new THREE.MeshBasicMaterial({ map: skyTex })
+      // skyGeo.scale(1, 1, -1)
+      // const sky = new THREE.Mesh(skyGeo, skyMat)
+      // sceneRef.current.add(sky)
+
+      //Add model
+      const loader = new GLTFLoader();
+      const dracoLoader = new DRACOLoader();
+      dracoLoader.setDecoderPath("/draco/")
+      loader.setDRACOLoader(dracoLoader)
+      loader.load("/glb/glbfile.glb", (gltf) => {
+        const model = gltf.scene;
+        model.scale.set(100, 100, 100);
+        model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
+        model.position.set(-14, -5, 15);
+        sceneRef.current.add(model);
+      })
 
       // Add a sphere geometry(as camera target)
       var geometry = new THREE.SphereGeometry(0.5, 32, 32);
@@ -129,7 +132,6 @@ export default function MapView() {
         { id: "014", x: -4.1, y: -1.4, z: -1.4 }
       ]
       creatLocationArray(testarr)
-
     }
 
     // Update the camera and renderer
@@ -150,16 +152,15 @@ export default function MapView() {
       let rect = renderer.domElement.getBoundingClientRect();
       mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
       mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-      // 更新射线
+      // Raycasting
       raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
-
-      // 获取被射线穿过的物体
       let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
-
-      // 如果有被射线穿过的物体，打印第一个物体的信息
-      if (intersects.length > 0) {
+      if (intersects.length > 0 && intersects[0].object.userData.id) {
+        let info = document.getElementById('info');
         console.log(intersects[0].object.userData);
+        info.style.display = 'block';
+        info.textContent = 'ID: ' + intersects[0].object.userData.id;
+        needUpdate = true;
       }
     }
 
@@ -169,6 +170,20 @@ export default function MapView() {
       TWEEN.update();
 
       renderer.render(sceneRef.current, cameraRef.current);
+      // Set the UI of selected object
+      let info = document.getElementById('info');
+      if (needUpdate) {
+        let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
+        if (intersects.length > 0) {
+          let vector = new THREE.Vector3();
+          vector.setFromMatrixPosition(intersects[0].object.matrixWorld);
+          vector.project(cameraRef.current);
+          let rect = renderer.domElement.getBoundingClientRect();
+          info.style.left = (rect.left + (vector.x + 1) / 2 * rect.width) + 'px';
+          info.style.top = (rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight) + 'px';
+          needUpdate = false;
+        }
+      }
       // Request for next animation frame
       animationFrameId = requestAnimationFrame(render);
       {
@@ -188,6 +203,8 @@ export default function MapView() {
     window.addEventListener('resize', updateCameraAndRenderer);
     // Listen for the click event
     window.addEventListener('click', onClick);
+    // Listen for camera change
+    controlsRef.current.addEventListener('change', () => { document.getElementById('info').style.display = 'none'; });
     render();
 
     return () => {
@@ -197,6 +214,7 @@ export default function MapView() {
       controlsRef.current.removeEventListener('change');
       window.removeEventListener('resize', updateCameraAndRenderer);
       window.removeEventListener('click', onClick);
+      controlsRef.current.removeEventListener('change', () => { document.getElementById('info').style.display = 'none'; });
     };
   }, []);
 
@@ -266,7 +284,7 @@ export default function MapView() {
       .start();
   }, []);
 
-  const throttledMove = useCallback(() => { throttle(moveCameraAndTarget, 300) }, [moveCameraAndTarget]);
+  const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), [moveCameraAndTarget]);
 
   const changeTest = useCallback((x, y, z) => {
     sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
@@ -293,6 +311,7 @@ export default function MapView() {
       <button onClick={() => { changeTest(0, 0, 0.1) }}>``z+</button>
       <button onClick={() => { changeTest(0, 0, -0.1) }}>``z-</button>
       <div className="container" ref={containerRef}></div>
+      <div id="info" style={{ position: "absolute", background: "red", display: "none" }}></div>
     </div>
   );
 }
