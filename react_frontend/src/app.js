@@ -71,6 +71,7 @@ const App = () => {
                 <Footer
                     style={{
                         textAlign: 'center',
+                        userSelect: 'none'
                     }}
                 >
                     Powered by Ant Design ©{new Date().getFullYear()} Developed by Group 12
