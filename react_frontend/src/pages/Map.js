@@ -1,22 +1,25 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
 import * as THREE from "three";
+import * as TWEEN from '@tweenjs/tween.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import * as TWEEN from '@tweenjs/tween.js';
 import { throttle } from '../utils/tool'
+import { CloseOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
+import { Card } from 'antd';
+import './Map.css';
 
+const { Meta } = Card;
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing 抗锯齿
   logarithmicDepthBuffer: true, // Logarithmic depth buffer 深度缓冲器
 });
 renderer.toneMapping = THREE.ACESFilmicToneMapping; // 开启HDR渲染
+
 export default function MapView() {
   //temp
-  const [cord, setCord] = useState({ x: 0, y: 0, z: 0 });
-  const [targ, setTarg] = useState({ x: 0, y: 0, z: 0 });
-  const [test, setTest] = useState(0);
+  const [card, setCard] = useState({});
 
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -42,7 +45,7 @@ export default function MapView() {
 
       // Add camera
       let width = document.documentElement.clientWidth;
-      cameraRef.current = new THREE.PerspectiveCamera(75, width / (width * 0.4), 0.1, 2000);
+      cameraRef.current = new THREE.PerspectiveCamera(75, width / Math.max(width * 0.4, 600), 0.1, 2000);
       cameraRef.current.position.set(-13, 5, -2);
       sceneRef.current.add(cameraRef.current)
 
@@ -111,28 +114,36 @@ export default function MapView() {
           { id: "L006", type: "L", description: "this is a snow location", x: 3.9, y: 2.4, z: -7 },
           { id: "L007", type: "L", description: "this is a snow location", x: 3.9, y: 2.7, z: -2.8 },
           { id: "L008", type: "L", description: "this is a snow location", x: 3.8, y: 2.2, z: -5.8 },
-          { id: "L009", type: "L", description: "this is a snow location", x: 3, y: 1.4, z: -12 },
+          { id: "L009", type: "L", description: "this is a snow location", x: 0.6, y: 0.2, z: -12 },
           { id: "L010", type: "L", description: "this is a snow location", x: 1, y: 0.9, z: -5.4 },
           { id: "L011", type: "L", description: "this is a snow location", x: -1.6, y: -0.7, z: -12.5 },
           { id: "L012", type: "L", description: "this is a snow location", x: -4, y: -1, z: -5 },
+          { id: "L013", type: "L", description: "this is a snow location", x: -2.9, y: -0.7, z: 2 },
+          { id: "L014", type: "L", description: "this is a snow location", x: -3.9, y: -0.9, z: 4.6 },
+          { id: "L015", type: "L", description: "this is a snow location", x: 3, y: 2.1, z: 7 },
           { id: "S001", type: "S", description: "this is a toliet", x: -2.3, y: -0.8, z: -8.7 },
-          { id: "S002", type: "S", description: "this is a Asian restaurant", x: -4.1, y: -1.4, z: -1.4 }
+          { id: "S002", type: "S", description: "this is a Asian restaurant", x: -4.1, y: -1.4, z: -1.4 },
+          { id: "S003", type: "S", description: "this is a toliet", x: -3.2, y: -1.1, z: -0.7 },
         ],
         routes: [
           { D1: { id: "L001", x: 9.5, y: 6.2, z: -7.7 }, D2: { id: "L008", x: 3.8, y: 2.2, z: -5.8 }, description: "this is a route from L001 and L008" },
           { D1: { id: "L002", x: 8, y: 5.3, z: -3.2 }, D2: { id: "L005", x: 4.7, y: 2.9, z: -3.6 }, description: "this is a route from L002 and L005" },
           { D1: { id: "L003", x: 6.1, y: 4.3, z: -1.4 }, D2: { id: "L007", x: 3.9, y: 2.7, z: -2.8 }, description: "this is a route from L003 and L007" },
-          { D1: { id: "L004", x: 5.8, y: 3.4, z: -12.2 }, D2: { id: "L009", x: 3, y: 1.4, z: -12 }, description: "this is a route from L004 and L009" },
+          { D1: { id: "L004", x: 5.8, y: 3.4, z: -12.2 }, D2: { id: "L009", x: 0.6, y: 0.2, z: -12 }, description: "this is a route from L004 and L009" },
           { D1: { id: "L005", x: 4.7, y: 2.9, z: -3.6 }, D2: { id: "L007", x: 3.9, y: 2.7, z: -2.8 }, description: "this is a route from L005 and L007" },
           { D1: { id: "L005", x: 4.7, y: 2.9, z: -3.6 }, D2: { id: "L008", x: 3.8, y: 2.2, z: -5.8 }, description: "this is a route from L005 and L008" },
           { D1: { id: "L006", x: 3.9, y: 2.4, z: -7 }, D2: { id: "L008", x: 3.8, y: 2.2, z: -5.8 }, description: "this is a route from L006 and L008" },
-          { D1: { id: "L006", x: 3.9, y: 2.4, z: -7 }, D2: { id: "L009", x: 3, y: 1.4, z: -12 }, description: "this is a route from L006 and L009" },
+          { D1: { id: "L006", x: 3.9, y: 2.4, z: -7 }, D2: { id: "L009", x: 0.6, y: 0.2, z: -12 }, description: "this is a route from L006 and L009" },
           { D1: { id: "L007", x: 3.9, y: 2.7, z: -2.8 }, D2: { id: "L010", x: 1, y: 0.9, z: -5.4 }, description: "this is a route from L007 and L010" },
-          { D1: { id: "L009", x: 3, y: 1.4, z: -12 }, D2: { id: "L011", x: -1.6, y: -0.7, z: -12.5 }, description: "this is a route from L009 and L011" },
+          { D1: { id: "L009", x: 0.6, y: 0.2, z: -12 }, D2: { id: "L011", x: -1.6, y: -0.7, z: -12.5 }, description: "this is a route from L009 and L011" },
           { D1: { id: "L010", x: 1, y: 0.9, z: -5.4 }, D2: { id: "L012", x: -4, y: -1, z: -5 }, description: "this is a route from L010 and L012" },
+          { D1: { id: "L013", x: -2.9, y: -0.7, z: 2 }, D2: { id: "L014", x: -3.9, y: -0.9, z: 4.6 }, description: "this is a route from L013 and L014" },
+          { D1: { id: "L014", x: -3.9, y: -0.9, z: 4.6 }, D2: { id: "L015", x: 3, y: 2.1, z: 7 }, description: "this is a route from L014 and L015" },
           { D1: { id: "S001", x: -2.3, y: -0.8, z: -8.7 }, D2: { id: "L011", x: -1.6, y: -0.7, z: -12.5 }, description: "this is a route from S001 and L011" },
           { D1: { id: "S001", x: -2.3, y: -0.8, z: -8.7 }, D2: { id: "L012", x: -4, y: -1, z: -5 }, description: "this is a route from S001 and L012" },
           { D1: { id: "S002", x: -4.1, y: -1.4, z: -1.4 }, D2: { id: "L012", x: -4, y: -1, z: -5 }, description: "this is a route from S002 and L012" },
+          { D1: { id: "S002", x: -4.1, y: -1.4, z: -1.4 }, D2: { id: "L013", x: -2.9, y: -0.7, z: 2 }, description: "this is a route from S002 and L013" },
+          { D1: { id: "S003", x: -3.2, y: -1.1, z: -0.7 }, D2: { id: "S002", x: -4.1, y: -1.4, z: -1.4 }, description: "this is a route from S003 and S002" },
         ]
       }
       creatLocationArray(testarr)
@@ -142,43 +153,42 @@ export default function MapView() {
     const updateCameraAndRenderer = () => {
       console.log("updateCameraAndRenderer");
       let width = document.documentElement.clientWidth;
-      setTest(prevTest => prevTest + 1);
       // Update camera's aspect ratio
-      cameraRef.current.aspect = width / (width * 0.4);
+      cameraRef.current.aspect = width / Math.max(width * 0.4, 600);
       // Update camera's projection matrix
       cameraRef.current.updateProjectionMatrix();
       // Update renderer's size
-      renderer.setSize(width, (width * 0.4));
+      renderer.setSize(width, Math.max(width * 0.4, 600));
     };
 
     // Click event
     const onClick = (event) => {
-      let rect = renderer.domElement.getBoundingClientRect();
-      mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-      mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-      // Using raycaster to select location or routes, show UI pannel
-      raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
-      let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
-      if (intersects.length > 0 && intersects[0].object.userData.id) {
-        // Raycasting
-        let selectedObject = intersects[0].object;
-        if (lineSegmentsRef.current) {
-          sceneRef.current.remove(lineSegmentsRef.current);
+      // Only when click on canvas
+      if (event.target.closest('.container')) {
+        let rect = renderer.domElement.getBoundingClientRect();
+        mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+        mouseRef.current.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+        // Using raycaster to select location or routes, show UI pannel
+        raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
+        let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
+        if (intersects.length > 0 && intersects[0].object.userData.id) {
+          // Raycasting
+          let selectedObject = intersects[0].object;
+          if (lineSegmentsRef.current) {
+            sceneRef.current.remove(lineSegmentsRef.current);
+          }
+          let material = new THREE.MeshLambertMaterial({ color: 0xFFD700, emissive: 0xFFD700 });
+          lineSegmentsRef.current = new THREE.Mesh(selectedObject.geometry, material);
+          lineSegmentsRef.current.position.copy(selectedObject.position);
+          if (selectedObject.userData.type == 'R') {
+            lineSegmentsRef.current.lookAt(selectedObject.userData.D1);
+          }
+          sceneRef.current.add(lineSegmentsRef.current);
+          // Show UI pannel
+          document.getElementById('selectedInfo').style.display = 'block';
+          setCard(intersects[0].object.userData);
+          needUpdate = true;
         }
-        let material = new THREE.MeshLambertMaterial({ color: 0xFFD700, emissive: 0xFFD700 });
-        lineSegmentsRef.current = new THREE.Mesh(selectedObject.geometry, material);
-        lineSegmentsRef.current.position.copy(selectedObject.position);
-        if (selectedObject.userData.type == 'R') {
-          lineSegmentsRef.current.lookAt(selectedObject.userData.D1);
-        }
-        sceneRef.current.add(lineSegmentsRef.current);
-        // Show UI pannel
-        let infoDiv = document.getElementById('selectedInfo');
-        infoDiv.style.display = 'block';
-        infoDiv.querySelector('#sId').textContent = 'ID: ' + intersects[0].object.userData.id;
-        infoDiv.querySelector('#sType').textContent = 'Type: ' + intersects[0].object.userData.type;
-        infoDiv.querySelector('#sDescription').textContent = 'Description: ' + intersects[0].object.userData.description;
-        needUpdate = true;
       }
     }
 
@@ -203,21 +213,21 @@ export default function MapView() {
           vector.setFromMatrixPosition(intersects[0].object.matrixWorld);
           vector.project(cameraRef.current);
           let rect = renderer.domElement.getBoundingClientRect();
-          info.style.left = (rect.left + (vector.x + 1) / 2 * rect.width) + 'px';
-          info.style.top = (rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight) + 'px';
+          let windowWidth = document.documentElement.clientWidth;
+          let cardX = rect.left + (vector.x + 1) / 2 * rect.width;
+          let cardY = rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight;
+          // 计算卡片的位置
+          cardX = (cardX > windowWidth * 0.7) ? cardX - info.offsetWidth : cardX;
+          cardY = (cardY > info.offsetHeight) ? cardY : cardY + info.offsetHeight;
+          info.style.left = cardX + 'px';
+          info.style.top = cardY + 'px';
+          // info.style.left = (rect.left + (vector.x + 1) / 2 * rect.width) + 'px';
+          // info.style.top = (rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight) + 'px';
           needUpdate = false;
         }
       }
       // Request for next animation frame
       animationFrameId = requestAnimationFrame(render);
-      {
-        let { x, y, z } = cameraRef.current.position;
-        setCord({ x: Math.round(x), y: Math.round(y), z: Math.round(z) });
-      }
-      {
-        let { x, y, z } = controlsRef.current.target;
-        setTarg({ x: Math.round(x), y: Math.round(y), z: Math.round(z) });
-      }
     };
 
     InitializeEnv();
@@ -273,7 +283,7 @@ export default function MapView() {
       let box = new THREE.Mesh(BoxGeometry, material_rou);
       box.position.set((D1.x + D2.x) / 2, (D1.y + D2.y) / 2, (D1.z + D2.z) / 2);
       box.lookAt(D1);
-      box.userData.id = route[i].D1.id + '-' + route[i].D2.id;
+      box.userData.id = route[i].D1.id + ' ⇄ ' + route[i].D2.id;
       box.userData.type = 'R';
       box.userData.D1 = D1;
       box.userData.description = route[i].description;
@@ -328,6 +338,11 @@ export default function MapView() {
   }, []);
   const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), [moveCameraAndTarget]);
 
+  // Hide the card
+  const closeCard = useCallback(() => {
+    document.getElementById('selectedInfo').style.display = 'none';
+  })
+
   // Only for test
   const changeTest = useCallback((x, y, z) => {
     sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
@@ -336,7 +351,6 @@ export default function MapView() {
 
   return (
     <div>
-      <p>Camera:{cord.x},{cord.y},{cord.z} OrbitControls:{targ.x},{targ.y},{targ.z}, Resize:{test}</p>
       <button onClick={() => { throttledMove('F') }}>Forward</button>
       <button onClick={() => { throttledMove('B') }}>Backward</button>
       <button onClick={() => { throttledMove('L') }}>Left</button>
@@ -354,11 +368,18 @@ export default function MapView() {
       <button onClick={() => { changeTest(0, 0, 0.1) }}>``z+</button>
       <button onClick={() => { changeTest(0, 0, -0.1) }}>``z-</button>
       <div className="container" ref={containerRef}></div>
-      <div id="selectedInfo" style={{ position: "absolute", background: "red", display: "none", userSelect: "none" }}>
-        <div id="sId"></div>
-        <div id="sType"></div>
-        <div id="sDescription"></div>
-      </div>
+      <Card
+        id="selectedInfo"
+        title={card.id}
+        extra={<CloseOutlined onClick={() => { closeCard() }} />}
+        actions={[
+          <FlagFilled key="setting" />,
+          <HomeFilled key="edit" />,
+          <EllipsisOutlined key="ellipsis" />,
+        ]}
+      >
+        <p>{card.description}</p>
+      </Card>
     </div>
   );
 }

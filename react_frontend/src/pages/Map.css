@@ -1,0 +1,7 @@
+#selectedInfo {
+    width: 35%;
+    max-width: 300px;
+    position: absolute;
+    display: none;
+    user-select: none;
+}
