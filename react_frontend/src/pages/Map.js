@@ -6,11 +6,10 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle } from '../utils/tool'
-import { CloseOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
+import { CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CloseOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
 import { Card } from 'antd';
 import './Map.css';
 
-const { Meta } = Card;
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing 抗锯齿
   logarithmicDepthBuffer: true, // Logarithmic depth buffer 深度缓冲器
@@ -18,9 +17,7 @@ const renderer = new THREE.WebGLRenderer({
 renderer.toneMapping = THREE.ACESFilmicToneMapping; // 开启HDR渲染
 
 export default function MapView() {
-  //temp
   const [card, setCard] = useState({});
-
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
@@ -28,27 +25,24 @@ export default function MapView() {
   const raycasterRef = useRef(null);
   const mouseRef = useRef(null);
   const sphereRef = useRef(null);
+  const selectedObjRef = useRef(null);
+
   const sphereTest = useRef(null);
-  const lineSegmentsRef = useRef(null);
 
   useEffect(() => {
-    console.log("useEffect")
     let animationFrameId;
     // Flag whether the selected ui should be updated
     let needUpdate = false;
 
     // Initialize the environment
     const InitializeEnv = () => {
-      console.log("InitializeEnv");
       // Initialize the scene
       sceneRef.current = new THREE.Scene();
-
       // Add camera
       let width = document.documentElement.clientWidth;
       cameraRef.current = new THREE.PerspectiveCamera(75, width / Math.max(width * 0.4, 600), 0.1, 2000);
       cameraRef.current.position.set(-13, 5, -2);
       sceneRef.current.add(cameraRef.current)
-
       //Load environment texture
       const hdrLoader = new RGBELoader()
       hdrLoader.loadAsync("/hdr/sky.hdr").then((texture) => {
@@ -57,7 +51,6 @@ export default function MapView() {
         sceneRef.current.environment = texture;
         renderer.toneMappingExposure = 0.8;
       })
-
       // Initialize the Orbit controller
       controlsRef.current = new OrbitControls(cameraRef.current, containerRef.current)
       controlsRef.current.enableDamping = true;
@@ -66,24 +59,19 @@ export default function MapView() {
       controlsRef.current.addEventListener('change', function () {
         cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
       });
-
       // Initialize the mouse controller
       raycasterRef.current = new THREE.Raycaster();
       mouseRef.current = new THREE.Vector2();
-
       // Add renderer to container
       containerRef.current.appendChild(renderer.domElement);
     }
 
     // Initialize the extra objects in environment
     const InitializeObject = () => {
-      console.log("InitializeObject");
-
       // Add coordinate system
       var axesHelper = new THREE.AxesHelper(50);
       sceneRef.current.add(axesHelper);
-
-      // //Add model
+      // //Add show montain model
       const loader = new GLTFLoader();
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("/draco/")
@@ -95,7 +83,6 @@ export default function MapView() {
         model.position.set(-14, -5, 15);
         sceneRef.current.add(model);
       })
-
       // Add a sphere geometry(as camera target)
       var geometry = new THREE.SphereGeometry(0.5, 32, 32);
       var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
@@ -153,11 +140,8 @@ export default function MapView() {
     const updateCameraAndRenderer = () => {
       console.log("updateCameraAndRenderer");
       let width = document.documentElement.clientWidth;
-      // Update camera's aspect ratio
       cameraRef.current.aspect = width / Math.max(width * 0.4, 600);
-      // Update camera's projection matrix
       cameraRef.current.updateProjectionMatrix();
-      // Update renderer's size
       renderer.setSize(width, Math.max(width * 0.4, 600));
     };
 
@@ -174,16 +158,16 @@ export default function MapView() {
         if (intersects.length > 0 && intersects[0].object.userData.id) {
           // Raycasting
           let selectedObject = intersects[0].object;
-          if (lineSegmentsRef.current) {
-            sceneRef.current.remove(lineSegmentsRef.current);
+          if (selectedObjRef.current) {
+            sceneRef.current.remove(selectedObjRef.current);
           }
           let material = new THREE.MeshLambertMaterial({ color: 0xFFD700, emissive: 0xFFD700 });
-          lineSegmentsRef.current = new THREE.Mesh(selectedObject.geometry, material);
-          lineSegmentsRef.current.position.copy(selectedObject.position);
+          selectedObjRef.current = new THREE.Mesh(selectedObject.geometry, material);
+          selectedObjRef.current.position.copy(selectedObject.position);
           if (selectedObject.userData.type == 'R') {
-            lineSegmentsRef.current.lookAt(selectedObject.userData.D1);
+            selectedObjRef.current.lookAt(selectedObject.userData.D1);
           }
-          sceneRef.current.add(lineSegmentsRef.current);
+          sceneRef.current.add(selectedObjRef.current);
           // Show UI pannel
           document.getElementById('selectedInfo').style.display = 'block';
           setCard(intersects[0].object.userData);
@@ -195,14 +179,13 @@ export default function MapView() {
     // Orbit change event
     const orbitChange = () => {
       document.getElementById('selectedInfo').style.display = 'none';
-      sceneRef.current.remove(lineSegmentsRef.current);
+      sceneRef.current.remove(selectedObjRef.current);
     }
 
     // Render
     const render = () => {
       console.log("render");
       TWEEN.update();
-
       renderer.render(sceneRef.current, cameraRef.current);
       // Set the UI of selected object
       let info = document.getElementById('selectedInfo');
@@ -216,13 +199,10 @@ export default function MapView() {
           let windowWidth = document.documentElement.clientWidth;
           let cardX = rect.left + (vector.x + 1) / 2 * rect.width;
           let cardY = rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight;
-          // 计算卡片的位置
-          cardX = (cardX > windowWidth * 0.7) ? cardX - info.offsetWidth : cardX;
-          cardY = (cardY > info.offsetHeight) ? cardY : cardY + info.offsetHeight;
-          info.style.left = cardX + 'px';
-          info.style.top = cardY + 'px';
-          // info.style.left = (rect.left + (vector.x + 1) / 2 * rect.width) + 'px';
-          // info.style.top = (rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight) + 'px';
+          // Adjust the card position
+          info.style.left = ((cardX > windowWidth * 0.7) ? cardX - info.offsetWidth : cardX) + 'px';
+          console.log(cardY, info.offsetHeight)
+          info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           needUpdate = false;
         }
       }
@@ -233,7 +213,6 @@ export default function MapView() {
     InitializeEnv();
     InitializeObject();
     updateCameraAndRenderer();
-    // Listen for window size change event, the click event, oribt change event
     window.addEventListener('resize', updateCameraAndRenderer);
     window.addEventListener('click', onClick);
     controlsRef.current.addEventListener('change', orbitChange);
@@ -250,11 +229,10 @@ export default function MapView() {
     };
   }, []);
 
-
   // Only for test
   const creatLocation = useCallback((x, y, z) => {
     // Add a sphere geometry
-    var geometry = new THREE.SphereGeometry(0.3, 32, 32);
+    var geometry = new THREE.SphereGeometry(0.4, 32, 32);
     var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
     sphereTest.current = new THREE.Mesh(geometry, material);
     sphereTest.current.position.set(x, y, z)
@@ -294,11 +272,10 @@ export default function MapView() {
   // User decide to move the oribt target
   const moveCameraAndTarget = useCallback((directionName) => {
     console.log("moveCameraAndTarget");
-    var distance = 2;
-    var oriDirection = new THREE.Vector3();
+    let distance = 2;
+    let oriDirection = new THREE.Vector3();
     cameraRef.current.getWorldDirection(oriDirection);
-    var direction = new THREE.Vector3(0, 0, 0);
-
+    let direction = new THREE.Vector3(0, 0, 0);
     switch (directionName) {
       case 'F':
         direction.set(oriDirection.x, 0, oriDirection.z)
@@ -316,25 +293,16 @@ export default function MapView() {
     }
     let dir = direction.multiplyScalar(distance)
     // 计算新的相机位置
-    var newPosition = new THREE.Vector3();
+    let newPosition = new THREE.Vector3();
     newPosition.copy(cameraRef.current.position);
     newPosition.add(dir);
-
+    new TWEEN.Tween(cameraRef.current.position).to(newPosition, 300).easing(TWEEN.Easing.Quadratic.InOut).start();
     // 计算新的固定点位置
-    var newTarget = new THREE.Vector3();
+    let newTarget = new THREE.Vector3();
     newTarget.copy(controlsRef.current.target);
     newTarget.add(dir);
-
-    // 设置新的相机位置和固定点位置(包括固定点实体球)
-    new TWEEN.Tween(cameraRef.current.position)
-      .to(newPosition, 300)
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .start();
     controlsRef.current.target.copy(newTarget);
-    new TWEEN.Tween(sphereRef.current.position)
-      .to(newTarget, 300)
-      .easing(TWEEN.Easing.Quadratic.InOut)
-      .start();
+    new TWEEN.Tween(sphereRef.current.position).to(newTarget, 300).easing(TWEEN.Easing.Quadratic.InOut).start();
   }, []);
   const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), [moveCameraAndTarget]);
 
@@ -348,26 +316,29 @@ export default function MapView() {
     sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
     console.log(sphereTest.current.position)
   }, [])
-
   return (
     <div>
-      <button onClick={() => { throttledMove('F') }}>Forward</button>
-      <button onClick={() => { throttledMove('B') }}>Backward</button>
-      <button onClick={() => { throttledMove('L') }}>Left</button>
-      <button onClick={() => { throttledMove('R') }}>Right</button>
-      <button onClick={() => { changeTest(1, 0, 0) }}>x+</button>
-      <button onClick={() => { changeTest(-1, 0, 0) }}>x-</button>
-      <button onClick={() => { changeTest(0, 1, 0) }}>y+</button>
-      <button onClick={() => { changeTest(0, -1, 0) }}>y-</button>
-      <button onClick={() => { changeTest(0, 0, 1) }}>z+</button>
-      <button onClick={() => { changeTest(0, 0, -1) }}>z-</button>
-      <button onClick={() => { changeTest(0.1, 0, 0) }}>``x+</button>
-      <button onClick={() => { changeTest(-0.1, 0, 0) }}>``x-</button>
-      <button onClick={() => { changeTest(0, 0.1, 0) }}>``y+</button>
-      <button onClick={() => { changeTest(0, -0.1, 0) }}>``y-</button>
-      <button onClick={() => { changeTest(0, 0, 0.1) }}>``z+</button>
-      <button onClick={() => { changeTest(0, 0, -0.1) }}>``z-</button>
+      <button onClick={() => changeTest(1, 0, 0)}>x+</button>
+      <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
+      <button onClick={() => changeTest(0, 1, 0)}>y+</button>
+      <button onClick={() => changeTest(0, -1, 0)}>y-</button>
+      <button onClick={() => changeTest(0, 0, 1)}>z+</button>
+      <button onClick={() => changeTest(0, 0, -1)}>z-</button>
+      <button onClick={() => changeTest(0.1, 0, 0)}>``x+</button>
+      <button onClick={() => changeTest(-0.1, 0, 0)}>``x-</button>
+      <button onClick={() => changeTest(0, 0.1, 0)}>``y+</button>
+      <button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
+      <button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
+      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button>
       <div className="container" ref={containerRef}></div>
+      <div className='moveControler' >
+        <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('F') }} />
+        <div>
+          <CaretLeftOutlined id="dirKey_left" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('L') }} />
+          <CaretRightOutlined id="dirKey_right" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('R') }} />
+        </div>
+        <CaretDownOutlined id="dirKey_down" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('B') }} />
+      </div>
       <Card
         id="selectedInfo"
         title={card.id}
