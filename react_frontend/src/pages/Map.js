@@ -6,33 +6,39 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle } from '../utils/tool'
-import { CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, CloseOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
-import { Card } from 'antd';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
+import { Flex, Cascader, Card, Tooltip, Button } from 'antd';
 import './Map.css';
 
+import { options, testArr, testAddArr } from '../utils/test'
+
 const renderer = new THREE.WebGLRenderer({
-  antialias: true, // Anti-aliasing 抗锯齿
-  logarithmicDepthBuffer: true, // Logarithmic depth buffer 深度缓冲器
+  antialias: true, // Anti-aliasing
+  logarithmicDepthBuffer: true, // Logarithmic depth buffer
 });
-renderer.toneMapping = THREE.ACESFilmicToneMapping; // 开启HDR渲染
+renderer.toneMapping = THREE.ACESFilmicToneMapping;
 
 export default function MapView() {
-  const [card, setCard] = useState({});
+  const [startLocation, setStartLocation] = useState(null);
+  const [endLocation, setEndLocation] = useState(null);
+  const [card, setCard] = useState({}); //selectedObj information
+  const [additionalShow, setAdditionalShow] = useState(false); //indicate if there displays additional map search objs
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
   const controlsRef = useRef(null);
   const raycasterRef = useRef(null);
   const mouseRef = useRef(null);
-  const sphereRef = useRef(null);
   const selectedObjRef = useRef(null);
+  const basicShowRef = useRef([]); // an array to save basic map search objs
+  const additionalShowRef = useRef([]); //an array to save additional map search objs
+  const [loadings, setLoadings] = useState([]);
 
   const sphereTest = useRef(null);
 
   useEffect(() => {
     let animationFrameId;
-    // Flag whether the selected ui should be updated
-    let needUpdate = false;
+    let needUpdate = false; // flag whether the selected ui should be updated
 
     // Initialize the environment
     const InitializeEnv = () => {
@@ -69,8 +75,8 @@ export default function MapView() {
     // Initialize the extra objects in environment
     const InitializeObject = () => {
       // Add coordinate system
-      var axesHelper = new THREE.AxesHelper(50);
-      sceneRef.current.add(axesHelper);
+      // var axesHelper = new THREE.AxesHelper(50);
+      // sceneRef.current.add(axesHelper);
       // //Add show montain model
       const loader = new GLTFLoader();
       const dracoLoader = new DRACOLoader();
@@ -83,57 +89,8 @@ export default function MapView() {
         model.position.set(-14, -5, 15);
         sceneRef.current.add(model);
       })
-      // Add a sphere geometry(as camera target)
-      var geometry = new THREE.SphereGeometry(0.5, 32, 32);
-      var material = new THREE.MeshBasicMaterial({ color: 0xff0000 });
-      sphereRef.current = new THREE.Mesh(geometry, material);
-      sceneRef.current.add(sphereRef.current);
-
-      creatLocation(3, 5, -3);
-
-      let testarr = {
-        locations: [
-          { id: "L001", type: "L", description: "this is a snow location", x: 9.5, y: 6.2, z: -7.7 },
-          { id: "L002", type: "L", description: "this is a snow location", x: 8, y: 5.3, z: -3.2 },
-          { id: "L003", type: "L", description: "this is a snow location", x: 6.1, y: 4.3, z: -1.4 },
-          { id: "L004", type: "L", description: "this is a snow location", x: 5.8, y: 3.4, z: -12.2 },
-          { id: "L005", type: "L", description: "this is a snow location", x: 4.7, y: 2.9, z: -3.6 },
-          { id: "L006", type: "L", description: "this is a snow location", x: 3.9, y: 2.4, z: -7 },
-          { id: "L007", type: "L", description: "this is a snow location", x: 3.9, y: 2.7, z: -2.8 },
-          { id: "L008", type: "L", description: "this is a snow location", x: 3.8, y: 2.2, z: -5.8 },
-          { id: "L009", type: "L", description: "this is a snow location", x: 0.6, y: 0.2, z: -12 },
-          { id: "L010", type: "L", description: "this is a snow location", x: 1, y: 0.9, z: -5.4 },
-          { id: "L011", type: "L", description: "this is a snow location", x: -1.6, y: -0.7, z: -12.5 },
-          { id: "L012", type: "L", description: "this is a snow location", x: -4, y: -1, z: -5 },
-          { id: "L013", type: "L", description: "this is a snow location", x: -2.9, y: -0.7, z: 2 },
-          { id: "L014", type: "L", description: "this is a snow location", x: -3.9, y: -0.9, z: 4.6 },
-          { id: "L015", type: "L", description: "this is a snow location", x: 3, y: 2.1, z: 7 },
-          { id: "S001", type: "S", description: "this is a toliet", x: -2.3, y: -0.8, z: -8.7 },
-          { id: "S002", type: "S", description: "this is a Asian restaurant", x: -4.1, y: -1.4, z: -1.4 },
-          { id: "S003", type: "S", description: "this is a toliet", x: -3.2, y: -1.1, z: -0.7 },
-        ],
-        routes: [
-          { D1: { id: "L001", x: 9.5, y: 6.2, z: -7.7 }, D2: { id: "L008", x: 3.8, y: 2.2, z: -5.8 }, description: "this is a route from L001 and L008" },
-          { D1: { id: "L002", x: 8, y: 5.3, z: -3.2 }, D2: { id: "L005", x: 4.7, y: 2.9, z: -3.6 }, description: "this is a route from L002 and L005" },
-          { D1: { id: "L003", x: 6.1, y: 4.3, z: -1.4 }, D2: { id: "L007", x: 3.9, y: 2.7, z: -2.8 }, description: "this is a route from L003 and L007" },
-          { D1: { id: "L004", x: 5.8, y: 3.4, z: -12.2 }, D2: { id: "L009", x: 0.6, y: 0.2, z: -12 }, description: "this is a route from L004 and L009" },
-          { D1: { id: "L005", x: 4.7, y: 2.9, z: -3.6 }, D2: { id: "L007", x: 3.9, y: 2.7, z: -2.8 }, description: "this is a route from L005 and L007" },
-          { D1: { id: "L005", x: 4.7, y: 2.9, z: -3.6 }, D2: { id: "L008", x: 3.8, y: 2.2, z: -5.8 }, description: "this is a route from L005 and L008" },
-          { D1: { id: "L006", x: 3.9, y: 2.4, z: -7 }, D2: { id: "L008", x: 3.8, y: 2.2, z: -5.8 }, description: "this is a route from L006 and L008" },
-          { D1: { id: "L006", x: 3.9, y: 2.4, z: -7 }, D2: { id: "L009", x: 0.6, y: 0.2, z: -12 }, description: "this is a route from L006 and L009" },
-          { D1: { id: "L007", x: 3.9, y: 2.7, z: -2.8 }, D2: { id: "L010", x: 1, y: 0.9, z: -5.4 }, description: "this is a route from L007 and L010" },
-          { D1: { id: "L009", x: 0.6, y: 0.2, z: -12 }, D2: { id: "L011", x: -1.6, y: -0.7, z: -12.5 }, description: "this is a route from L009 and L011" },
-          { D1: { id: "L010", x: 1, y: 0.9, z: -5.4 }, D2: { id: "L012", x: -4, y: -1, z: -5 }, description: "this is a route from L010 and L012" },
-          { D1: { id: "L013", x: -2.9, y: -0.7, z: 2 }, D2: { id: "L014", x: -3.9, y: -0.9, z: 4.6 }, description: "this is a route from L013 and L014" },
-          { D1: { id: "L014", x: -3.9, y: -0.9, z: 4.6 }, D2: { id: "L015", x: 3, y: 2.1, z: 7 }, description: "this is a route from L014 and L015" },
-          { D1: { id: "S001", x: -2.3, y: -0.8, z: -8.7 }, D2: { id: "L011", x: -1.6, y: -0.7, z: -12.5 }, description: "this is a route from S001 and L011" },
-          { D1: { id: "S001", x: -2.3, y: -0.8, z: -8.7 }, D2: { id: "L012", x: -4, y: -1, z: -5 }, description: "this is a route from S001 and L012" },
-          { D1: { id: "S002", x: -4.1, y: -1.4, z: -1.4 }, D2: { id: "L012", x: -4, y: -1, z: -5 }, description: "this is a route from S002 and L012" },
-          { D1: { id: "S002", x: -4.1, y: -1.4, z: -1.4 }, D2: { id: "L013", x: -2.9, y: -0.7, z: 2 }, description: "this is a route from S002 and L013" },
-          { D1: { id: "S003", x: -3.2, y: -1.1, z: -0.7 }, D2: { id: "S002", x: -4.1, y: -1.4, z: -1.4 }, description: "this is a route from S003 and S002" },
-        ]
-      }
-      creatLocationArray(testarr)
+      // creatLocation(3, 5, -3);
+      creatLocationArray(testArr)
     }
 
     // Update the camera and renderer
@@ -176,12 +133,6 @@ export default function MapView() {
       }
     }
 
-    // Orbit change event
-    const orbitChange = () => {
-      document.getElementById('selectedInfo').style.display = 'none';
-      sceneRef.current.remove(selectedObjRef.current);
-    }
-
     // Render
     const render = () => {
       console.log("render");
@@ -201,7 +152,6 @@ export default function MapView() {
           let cardY = rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight;
           // Adjust the card position
           info.style.left = ((cardX > windowWidth * 0.7) ? cardX - info.offsetWidth : cardX) + 'px';
-          console.log(cardY, info.offsetHeight)
           info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           needUpdate = false;
         }
@@ -215,7 +165,7 @@ export default function MapView() {
     updateCameraAndRenderer();
     window.addEventListener('resize', updateCameraAndRenderer);
     window.addEventListener('click', onClick);
-    controlsRef.current.addEventListener('change', orbitChange);
+    controlsRef.current.addEventListener('change', closeCard);
     render();
 
     return () => {
@@ -225,7 +175,7 @@ export default function MapView() {
       controlsRef.current.removeEventListener('change');
       window.removeEventListener('resize', updateCameraAndRenderer);
       window.removeEventListener('click', onClick);
-      controlsRef.current.removeEventListener('change', orbitChange);
+      controlsRef.current.removeEventListener('change', closeCard);
     };
   }, []);
 
@@ -240,32 +190,64 @@ export default function MapView() {
   }, [])
 
   // Create mesh by location
-  const creatLocationArray = useCallback((Arr) => {
+  const creatLocationArray = useCallback((Arr, baisc = true) => {
     let SphereGeometry = new THREE.SphereGeometry(0.4, 32, 32);
-    let material_loc = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+    let material_loc = new THREE.MeshBasicMaterial({ color: 0x0287fc });
     let location = Arr.locations;
     for (let i = 0; i < location.length; i++) {
       let sphere = new THREE.Mesh(SphereGeometry, material_loc);
       sphere.position.set(location[i].x, location[i].y, location[i].z);
-      sphere.userData.id = location[i].id;
-      sphere.userData.type = location[i].type;
-      sphere.userData.description = location[i].description;
+      sphere.userData = location[i];
+      sphere.userData.dispalyName = location[i].id + " " + location[i].name;
       sceneRef.current.add(sphere);
+      baisc ? basicShowRef.current.push(sphere) : additionalShowRef.current.push(sphere);
     }
     let route = Arr.routes;
-    let material_rou = new THREE.MeshBasicMaterial({ color: 0x0287fc });
+    let material_arr = [
+      new THREE.MeshBasicMaterial({ color: 0x7f7f7f }), //grey
+      // new THREE.LineDashedMaterial({ color: 0x7f7f7f, dashSize: 1, gapSize: 0.5 }), //grey
+      // new THREE.ShaderMaterial({
+      //   uniforms: {
+      //     dashSize: { value: 3 },
+      //     gapSize: { vaue: 1 },
+      //   },
+      //   fragmentShader: `void main() {gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // 设置为蓝色}`,
+      // }),
+      new THREE.MeshBasicMaterial({ color: 0x008a00 }), //green
+      new THREE.MeshBasicMaterial({ color: 0x00008a }), //blue
+      new THREE.MeshBasicMaterial({ color: 0x8a0000 }), //red
+      new THREE.MeshBasicMaterial({ color: 0x000000 }) //black
+    ];
     for (let i = 0; i < route.length; i++) {
       let D1 = new THREE.Vector3(route[i].D1.x, route[i].D1.y, route[i].D1.z);
       let D2 = new THREE.Vector3(route[i].D2.x, route[i].D2.y, route[i].D2.z);
-      let BoxGeometry = new THREE.BoxGeometry(0.3, 0.3, D1.distanceTo(D2));
-      let box = new THREE.Mesh(BoxGeometry, material_rou);
-      box.position.set((D1.x + D2.x) / 2, (D1.y + D2.y) / 2, (D1.z + D2.z) / 2);
+      let BoxGeometry = new THREE.BoxGeometry(0.2, 0.2, D1.distanceTo(D2));
+      let box = new THREE.Mesh(BoxGeometry, material_arr[route[i].difficulty]);
+      // if (route[i].difficulty == 0) {
+      //   let edges = new THREE.EdgesGeometry(BoxGeometry);
+      //   box = new THREE.LineSegments(edges, material_arr[0]);
+      //   box.computeLineDistances();
+      // }
+      let midpoint = new THREE.Vector3().addVectors(D1, D2).multiplyScalar(0.5);
+      box.position.copy(midpoint);
       box.lookAt(D1);
-      box.userData.id = route[i].D1.id + ' ⇄ ' + route[i].D2.id;
-      box.userData.type = 'R';
       box.userData.D1 = D1;
+      if (route[i].lineSegmentType) {
+        let direction = new THREE.Vector3().subVectors(D2, D1).normalize(); // compute the vector between two locations
+        let normal = new THREE.Vector3().crossVectors(direction, new THREE.Vector3(0, 1, 0)).normalize(); // compute normal vector
+        let displacement = new THREE.Vector3().copy(normal).multiplyScalar(0.15 * route[i].lineSegmentType); // compute the displacement vector
+        box.position.copy(new THREE.Vector3().addVectors(midpoint, displacement));
+        box.userData.D1 = D1.addVectors(D1, displacement);
+      }
+      box.userData.dispalyName = route[i].id + " (" + route[i].D1.id + ' ⇄ ' + route[i].D2.id + ")";
+      box.userData.id = route[i].id;
+      box.userData.type = 'R';
       box.userData.description = route[i].description;
       sceneRef.current.add(box);
+      baisc ? basicShowRef.current.push(box) : additionalShowRef.current.push(box);
+    }
+    if (!baisc) {
+      setAdditionalShow(true);
     }
   }, [])
 
@@ -302,22 +284,118 @@ export default function MapView() {
     newTarget.copy(controlsRef.current.target);
     newTarget.add(dir);
     controlsRef.current.target.copy(newTarget);
-    new TWEEN.Tween(sphereRef.current.position).to(newTarget, 300).easing(TWEEN.Easing.Quadratic.InOut).start();
   }, []);
   const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), [moveCameraAndTarget]);
 
   // Hide the card
-  const closeCard = useCallback(() => {
+  const closeCard = () => {
     document.getElementById('selectedInfo').style.display = 'none';
-  })
+    sceneRef.current.remove(selectedObjRef.current);
+  }
 
   // Only for test
-  const changeTest = useCallback((x, y, z) => {
+  const changeTest = (x, y, z) => {
     sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
     console.log(sphereTest.current.position)
-  }, [])
+  }
+
+  const displayRender = (labels) => labels[labels.length - 1];
+
+  // Cascader onchange
+  const onChange = (value, index) => {
+    console.log(value, index);
+    index ? setEndLocation(value) : setStartLocation(value);
+  };
+
+  // Search for avaliable route
+  const searchRoute = (index) => {
+    console.log("searchRoute")
+    setLoadings((prevLoadings) => {
+      const newLoadings = [...prevLoadings];
+      newLoadings[index] = true;
+      return newLoadings;
+    });
+    setTimeout(() => {
+      setLoadings((prevLoadings) => {
+        const newLoadings = [...prevLoadings];
+        newLoadings[index] = false;
+        return newLoadings;
+      });
+      clearShow(0.2);
+      additionalShowRef.current = [];
+      creatLocationArray(testAddArr, false)
+    }, 2000);
+  };
+
+  // Clear the existed additional map reach objs
+  const clearShow = (opacity) => {
+    basicShowRef.current.forEach(obj => {
+      obj.material.opacity = opacity;
+      obj.material.transparent = true;
+      obj.material.needsUpdate = true;
+    });
+
+    additionalShowRef.current.forEach(obj => {
+      sceneRef.current.remove(obj);
+    });
+    additionalShowRef.current = [];
+    setAdditionalShow(false);
+  }
+
+  // Reset to the Status before seach
+  const resetShow = () => {
+    clearShow(1);
+    setStartLocation(undefined);
+    setEndLocation(undefined);
+  }
   return (
     <div>
+      <Flex className="searchArea" justify="center" wrap="wrap">
+        <Cascader
+          className='searchInput' expandTrigger="hover" placeholder="Start Loction" size="large"
+          options={options}
+          displayRender={displayRender}
+          value={startLocation}
+          onChange={(value) => onChange(value, 0)}
+        />
+        <Cascader
+          className='searchInput' expandTrigger="hover" placeholder="End Loction" size="large"
+          options={options}
+          displayRender={displayRender}
+          value={endLocation}
+          onChange={(value) => onChange(value, 1)}
+        />
+        <Tooltip title="search">
+          <Button type="primary" shape="circle" loading={loadings[1]} onClick={() => searchRoute(1)} icon={<SearchOutlined />} className='searchButton' />
+        </Tooltip>
+        < Tooltip title="reset">
+          <Button type="primary" shape="circle" danger onClick={resetShow} icon={<CloseOutlined />} disabled={!additionalShow} className='searchButton' />
+        </Tooltip>
+        < Tooltip title="details">
+          <Button type="default" icon={<EllipsisOutlined />} disabled={!additionalShow} className='searchButton' />
+        </Tooltip>
+      </Flex>
+      <div className="container" ref={containerRef}></div>
+      <Flex className='moveControler' vertical={true} align="center" >
+        <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px' }} onClick={() => { throttledMove('F') }} />
+        <Flex>
+          <CaretLeftOutlined id="dirKey_left" style={{ fontSize: '40px' }} onClick={() => { throttledMove('L') }} />
+          <CaretRightOutlined id="dirKey_right" style={{ fontSize: '40px' }} onClick={() => { throttledMove('R') }} />
+        </Flex>
+        <CaretDownOutlined id="dirKey_down" style={{ fontSize: '40px' }} onClick={() => { throttledMove('B') }} />
+      </Flex>
+      <Card
+        id="selectedInfo"
+        title={card.dispalyName}
+        extra={<CloseOutlined onClick={() => { closeCard() }} />}
+        actions={[
+          < Tooltip title="set as start"><FlagFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']) }} /></Tooltip>,
+          < Tooltip title="set as end"><HomeFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']) }} /></Tooltip>,
+          < Tooltip title="details"><EllipsisOutlined key="ellipsis" /></Tooltip>,
+        ]}
+      >
+        <p>{card.description}</p>
+      </Card>
       <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
       <button onClick={() => changeTest(0, 1, 0)}>y+</button>
@@ -330,27 +408,6 @@ export default function MapView() {
       <button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
       <button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
       <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button>
-      <div className="container" ref={containerRef}></div>
-      <div className='moveControler' >
-        <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('F') }} />
-        <div>
-          <CaretLeftOutlined id="dirKey_left" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('L') }} />
-          <CaretRightOutlined id="dirKey_right" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('R') }} />
-        </div>
-        <CaretDownOutlined id="dirKey_down" style={{ fontSize: '40px', color: '#08c' }} onClick={() => { throttledMove('B') }} />
-      </div>
-      <Card
-        id="selectedInfo"
-        title={card.id}
-        extra={<CloseOutlined onClick={() => { closeCard() }} />}
-        actions={[
-          <FlagFilled key="setting" />,
-          <HomeFilled key="edit" />,
-          <EllipsisOutlined key="ellipsis" />,
-        ]}
-      >
-        <p>{card.description}</p>
-      </Card>
-    </div>
+    </div >
   );
 }

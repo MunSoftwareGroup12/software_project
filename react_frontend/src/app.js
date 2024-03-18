@@ -34,17 +34,14 @@ const items = [{
     ),
 }]
 const App = () => {
-    const {
-        token: { colorBgContainer, borderRadiusLG },
-    } = theme.useToken();
     return (
         <Layout className='app_layout'>
             <Sider
                 className="app_sider"
+                style={{ position: 'absolute', zIndex: 1000 }}
                 breakpoint="lg"
                 collapsedWidth="0"
             >
-                <div className="demo-logo-vertical" />
                 <Menu
                     className="app_menu"
                     theme="dark" mode="inline"
@@ -55,7 +52,6 @@ const App = () => {
             <Layout>
                 <Header
                     className="app_header">
-                    <div className="demo-logo" />
                     <Menu
                         className="app_menu"
                         theme="dark"
