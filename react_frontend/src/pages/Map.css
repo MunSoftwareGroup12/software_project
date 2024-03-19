@@ -1,16 +1,26 @@
-.searchArea {
-    width: 100%;
-    padding: 1rem 0;
+.searchBox {
+    position: absolute;
+    background: white;
+    bottom: 0;
 }
 
-.searchInput {
-    width: 48%;
-    max-width: 400px;
-    padding-bottom: 0.5rem;
+.searchAreaBox {
+    width: 100%;
+}
+
+.searchArea {
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 1rem;
+}
+
+.searchItem {
+    width: 80%;
 }
 
 .searchButton {
-    margin: 0 0.2rem;
+    width: 80%;
+    margin-top: 1rem;
 }
 
 .container {

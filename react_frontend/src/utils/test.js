@@ -1,3 +1,17 @@
+export const difficultyOptions = [
+    {
+        label: "easy",
+        value: 1
+    },
+    {
+        label: "normal",
+        value: 2
+    },
+    {
+        label: "hard",
+        value: 3
+    }
+]
 export const options = [
     {
         value: 'skiPoint',

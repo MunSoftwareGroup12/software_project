@@ -7,10 +7,10 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle } from '../utils/tool'
 import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
-import { Flex, Cascader, Card, Tooltip, Button } from 'antd';
+import { Flex, Cascader, FloatButton, Drawer, Select, Card, Tooltip, Button } from 'antd';
 import './Map.css';
 
-import { options, testArr, testAddArr } from '../utils/test'
+import { difficultyOptions, options, testArr, testAddArr } from '../utils/test'
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
@@ -21,8 +21,12 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 export default function MapView() {
   const [startLocation, setStartLocation] = useState(null);
   const [endLocation, setEndLocation] = useState(null);
+  const [difficulty, setDifficulty] = useState(null);
   const [card, setCard] = useState({}); //selectedObj information
   const [additionalShow, setAdditionalShow] = useState(false); //indicate if there displays additional map search objs
+  const [loadings, setLoadings] = useState([]); 
+  const [pannelOpen, setPannelOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
@@ -32,7 +36,6 @@ export default function MapView() {
   const selectedObjRef = useRef(null);
   const basicShowRef = useRef([]); // an array to save basic map search objs
   const additionalShowRef = useRef([]); //an array to save additional map search objs
-  const [loadings, setLoadings] = useState([]);
 
   const sphereTest = useRef(null);
 
@@ -45,8 +48,11 @@ export default function MapView() {
       // Initialize the scene
       sceneRef.current = new THREE.Scene();
       // Add camera
-      let width = document.documentElement.clientWidth;
-      cameraRef.current = new THREE.PerspectiveCamera(75, width / Math.max(width * 0.4, 600), 0.1, 2000);
+
+      let element = document.documentElement;
+      cameraRef.current = new THREE.PerspectiveCamera(75, element.clientWidth / element.clientHeight, 0.1, 2000);
+      // let width = document.documentElement.clientWidth;
+      // cameraRef.current = new THREE.PerspectiveCamera(75, width / Math.max(width * 0.4, 600), 0.1, 2000);
       cameraRef.current.position.set(-13, 5, -2);
       sceneRef.current.add(cameraRef.current)
       //Load environment texture
@@ -96,10 +102,13 @@ export default function MapView() {
     // Update the camera and renderer
     const updateCameraAndRenderer = () => {
       console.log("updateCameraAndRenderer");
-      let width = document.documentElement.clientWidth;
-      cameraRef.current.aspect = width / Math.max(width * 0.4, 600);
+      let element = document.documentElement;
+      cameraRef.current.aspect = element.clientWidth / element.clientHeight;
+      // let width = document.documentElement.clientWidth;
+      // cameraRef.current.aspect = width / Math.max(width * 0.4, 600);
       cameraRef.current.updateProjectionMatrix();
-      renderer.setSize(width, Math.max(width * 0.4, 600));
+      // renderer.setSize(width, Math.max(width * 0.4, 600));
+      renderer.setSize(element.clientWidth, element.clientHeight);
     };
 
     // Click event
@@ -124,6 +133,8 @@ export default function MapView() {
           if (selectedObject.userData.type == 'R') {
             selectedObjRef.current.lookAt(selectedObject.userData.D1);
           }
+          console.log(selectedObject)
+          console.log(selectedObjRef.current)
           sceneRef.current.add(selectedObjRef.current);
           // Show UI pannel
           document.getElementById('selectedInfo').style.display = 'block';
@@ -205,14 +216,6 @@ export default function MapView() {
     let route = Arr.routes;
     let material_arr = [
       new THREE.MeshBasicMaterial({ color: 0x7f7f7f }), //grey
-      // new THREE.LineDashedMaterial({ color: 0x7f7f7f, dashSize: 1, gapSize: 0.5 }), //grey
-      // new THREE.ShaderMaterial({
-      //   uniforms: {
-      //     dashSize: { value: 3 },
-      //     gapSize: { vaue: 1 },
-      //   },
-      //   fragmentShader: `void main() {gl_FragColor = vec4(0.0, 0.0, 1.0, 1.0); // 设置为蓝色}`,
-      // }),
       new THREE.MeshBasicMaterial({ color: 0x008a00 }), //green
       new THREE.MeshBasicMaterial({ color: 0x00008a }), //blue
       new THREE.MeshBasicMaterial({ color: 0x8a0000 }), //red
@@ -223,11 +226,6 @@ export default function MapView() {
       let D2 = new THREE.Vector3(route[i].D2.x, route[i].D2.y, route[i].D2.z);
       let BoxGeometry = new THREE.BoxGeometry(0.2, 0.2, D1.distanceTo(D2));
       let box = new THREE.Mesh(BoxGeometry, material_arr[route[i].difficulty]);
-      // if (route[i].difficulty == 0) {
-      //   let edges = new THREE.EdgesGeometry(BoxGeometry);
-      //   box = new THREE.LineSegments(edges, material_arr[0]);
-      //   box.computeLineDistances();
-      // }
       let midpoint = new THREE.Vector3().addVectors(D1, D2).multiplyScalar(0.5);
       box.position.copy(midpoint);
       box.lookAt(D1);
@@ -304,7 +302,12 @@ export default function MapView() {
   // Cascader onchange
   const onChange = (value, index) => {
     console.log(value, index);
-    index ? setEndLocation(value) : setStartLocation(value);
+    switch (index) {
+      case 0: setStartLocation(value); break;
+      case 1: setEndLocation(value); break;
+      case 2: setDifficulty(value); break;
+      default: break;
+    }
   };
 
   // Search for avaliable route
@@ -329,9 +332,10 @@ export default function MapView() {
 
   // Clear the existed additional map reach objs
   const clearShow = (opacity) => {
+    console.log("clearShow", basicShowRef.current.length)
     basicShowRef.current.forEach(obj => {
       obj.material.opacity = opacity;
-      obj.material.transparent = true;
+      obj.material.transparent = opacity < 1 ? true : false;
       obj.material.needsUpdate = true;
     });
 
@@ -344,38 +348,15 @@ export default function MapView() {
 
   // Reset to the Status before seach
   const resetShow = () => {
+    console.log("resetShow")
     clearShow(1);
     setStartLocation(undefined);
     setEndLocation(undefined);
   }
   return (
     <div>
-      <Flex className="searchArea" justify="center" wrap="wrap">
-        <Cascader
-          className='searchInput' expandTrigger="hover" placeholder="Start Loction" size="large"
-          options={options}
-          displayRender={displayRender}
-          value={startLocation}
-          onChange={(value) => onChange(value, 0)}
-        />
-        <Cascader
-          className='searchInput' expandTrigger="hover" placeholder="End Loction" size="large"
-          options={options}
-          displayRender={displayRender}
-          value={endLocation}
-          onChange={(value) => onChange(value, 1)}
-        />
-        <Tooltip title="search">
-          <Button type="primary" shape="circle" loading={loadings[1]} onClick={() => searchRoute(1)} icon={<SearchOutlined />} className='searchButton' />
-        </Tooltip>
-        < Tooltip title="reset">
-          <Button type="primary" shape="circle" danger onClick={resetShow} icon={<CloseOutlined />} disabled={!additionalShow} className='searchButton' />
-        </Tooltip>
-        < Tooltip title="details">
-          <Button type="default" icon={<EllipsisOutlined />} disabled={!additionalShow} className='searchButton' />
-        </Tooltip>
-      </Flex>
       <div className="container" ref={containerRef}></div>
+      {/* Movecontroller of the map */}
       <Flex className='moveControler' vertical={true} align="center" >
         <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px' }} onClick={() => { throttledMove('F') }} />
         <Flex>
@@ -384,19 +365,70 @@ export default function MapView() {
         </Flex>
         <CaretDownOutlined id="dirKey_down" style={{ fontSize: '40px' }} onClick={() => { throttledMove('B') }} />
       </Flex>
+      {/* Action button group */}
+      <FloatButton.Group shape="circle" style={{ right: 24, bottom: 50 }}>
+        <FloatButton type="primary" icon={<SearchOutlined />} onClick={() => { setPannelOpen(true) }} />
+        {additionalShow && <FloatButton icon={<CloseOutlined />} onClick={resetShow} />}
+        {additionalShow && <FloatButton />}
+      </FloatButton.Group>
+      {/* Location information card */}
       <Card
         id="selectedInfo"
         title={card.dispalyName}
         extra={<CloseOutlined onClick={() => { closeCard() }} />}
         actions={[
-          < Tooltip title="set as start"><FlagFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']) }} /></Tooltip>,
-          < Tooltip title="set as end"><HomeFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']) }} /></Tooltip>,
+          < Tooltip title="set as start"><FlagFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
+          < Tooltip title="set as end"><HomeFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
           < Tooltip title="details"><EllipsisOutlined key="ellipsis" /></Tooltip>,
         ]}
       >
         <p>{card.description}</p>
       </Card>
-      <button onClick={() => changeTest(1, 0, 0)}>x+</button>
+      {/* Search panel */}
+      <Drawer
+        title="Search Best Routes"
+        placement={"bottom"}
+        maskClosable={false}
+        closable={false}
+        extra={<CloseOutlined onClick={() => { setPannelOpen(false) }} />}
+        open={pannelOpen}
+      >
+        <Flex className="searchAreaBox" justify="center">
+          <Flex className="searchArea" justify="center" wrap="wrap" gap="small">
+            <Cascader
+              className='searchItem' expandTrigger="hover" placeholder="Choose Start Loction" size="large"
+              options={options}
+              value={startLocation}
+              displayRender={displayRender}
+              onChange={(value) => onChange(value, 0)}
+            />
+            <Cascader
+              className='searchItem' expandTrigger="hover" placeholder="Choose End Loction" size="large"
+              options={options}
+              value={endLocation}
+              displayRender={displayRender}
+              onChange={(value) => onChange(value, 1)}
+            />
+            <Select
+              className='searchItem' mode="multiple" placeholder="Difficulty Preference(mutiple)" size="large"
+              allowClear
+              options={difficultyOptions}
+              onChange={(value) => onChange(value, 2)}
+            />
+            <Button className='searchButton' type="primary" size="large"
+              loading={loadings[1]} onClick={() => searchRoute(1)} icon={<SearchOutlined />} >
+              Search
+            </Button>
+          </Flex>
+        </Flex>
+      </Drawer>
+      {/* Routes select panel */}
+      <Modal title="Select Routes" open={isModalOpen}>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+        <p>Some contents...</p>
+      </Modal>
+      {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
       <button onClick={() => changeTest(0, 1, 0)}>y+</button>
       <button onClick={() => changeTest(0, -1, 0)}>y-</button>
@@ -407,7 +439,7 @@ export default function MapView() {
       <button onClick={() => changeTest(0, 0.1, 0)}>``y+</button>
       <button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
       <button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
-      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button>
+      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button> */}
     </div >
   );
 }
