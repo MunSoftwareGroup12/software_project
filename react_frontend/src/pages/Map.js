@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle } from '../utils/tool'
 import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
-import { Flex, Cascader, FloatButton, Drawer, Select, Card, Tooltip, Button } from 'antd';
+import { Flex, Cascader, FloatButton, Modal, Drawer, Select, Card, Tooltip, Button } from 'antd';
 import './Map.css';
 
 import { difficultyOptions, options, testArr, testAddArr } from '../utils/test'
@@ -24,9 +24,9 @@ export default function MapView() {
   const [difficulty, setDifficulty] = useState(null);
   const [card, setCard] = useState({}); //selectedObj information
   const [additionalShow, setAdditionalShow] = useState(false); //indicate if there displays additional map search objs
-  const [loadings, setLoadings] = useState([]); 
+  const [loadings, setLoadings] = useState([]);
   const [pannelOpen, setPannelOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(true);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
@@ -215,7 +215,7 @@ export default function MapView() {
     }
     let route = Arr.routes;
     let material_arr = [
-      new THREE.MeshBasicMaterial({ color: 0x7f7f7f }), //grey
+      new THREE.MeshBasicMaterial({ color: 0x5f5f5f }), //grey
       new THREE.MeshBasicMaterial({ color: 0x008a00 }), //green
       new THREE.MeshBasicMaterial({ color: 0x00008a }), //blue
       new THREE.MeshBasicMaterial({ color: 0x8a0000 }), //red
@@ -324,9 +324,8 @@ export default function MapView() {
         newLoadings[index] = false;
         return newLoadings;
       });
-      clearShow(0.2);
-      additionalShowRef.current = [];
-      creatLocationArray(testAddArr, false)
+      setPannelOpen(false)
+      setIsModalOpen(true);
     }, 2000);
   };
 
@@ -352,6 +351,14 @@ export default function MapView() {
     clearShow(1);
     setStartLocation(undefined);
     setEndLocation(undefined);
+  }
+
+  // Deside which routes to display
+  const selectOneRoute = () => {
+    clearShow(0.2);
+    additionalShowRef.current = [];
+    creatLocationArray(testAddArr[1], false);
+    setIsModalOpen(false);
   }
   return (
     <div>
@@ -423,7 +430,8 @@ export default function MapView() {
         </Flex>
       </Drawer>
       {/* Routes select panel */}
-      <Modal title="Select Routes" open={isModalOpen}>
+      <Modal title="Select Routes" okText="Display" cancelText="Cancel"
+        open={isModalOpen} onOk={selectOneRoute} onCancel={() => { setIsModalOpen(false) }} >
         <p>Some contents...</p>
         <p>Some contents...</p>
         <p>Some contents...</p>
