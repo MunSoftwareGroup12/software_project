@@ -364,7 +364,7 @@ export default function Map() {
 
   // Deside which route to display
   const selectOneRoute = () => {
-    clearShow(0.2);
+    clearShow(0.1);
     additionalShowRef.current = [];
     creatLocationArray(caculateRoutes[selectRoute - 1], false);
     setIsModalOpen(false);
@@ -372,7 +372,7 @@ export default function Map() {
 
   return (
     <div>
-      <Spin spinning={loadings[0]} fullscreen tip="loading..." />
+      <Spin spinning={loadings[0]} fullscreen tip="LOADING..." />
       <div className="container" ref={containerRef}></div>
       {contextHolder}
       {/* Map movecontroller */}
