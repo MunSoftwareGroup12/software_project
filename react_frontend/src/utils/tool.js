@@ -15,3 +15,5 @@ export function throttle(func, limit) {
         }
     }
 }
+
+export function displayRender(labels) { return labels[labels.length - 1]; }

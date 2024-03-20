@@ -4,6 +4,8 @@ import { HomeOutlined, BranchesOutlined, AccountBookOutlined, UserOutlined } fro
 import { Layout, Menu, theme } from 'antd';
 import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import { QueryClient, QueryClientProvider } from 'react-query';
+const queryClient = new QueryClient();
 const { Header, Content, Footer, Sider } = Layout;
 const items = [{
     key: "1",
@@ -33,47 +35,48 @@ const items = [{
         <Link to={`/notYet`}>CONTACT US</Link>
     ),
 }]
-const App = () => {
+export default function App() {
     return (
-        <Layout className='app_layout'>
-            <Sider
-                className="app_sider"
-                style={{ position: 'absolute', zIndex: 1000 }}
-                breakpoint="lg"
-                collapsedWidth="0"
-            >
-                <Menu
-                    className="app_menu"
-                    theme="dark" mode="inline"
-                    defaultSelectedKeys={['1']}
-                    items={items}
-                />
-            </Sider>
-            <Layout>
-                <Header
-                    className="app_header">
+        <QueryClientProvider client={queryClient}>
+            <Layout className='app_layout'>
+                <Sider
+                    className="app_sider"
+                    style={{ position: 'absolute', zIndex: 1000 }}
+                    breakpoint="lg"
+                    collapsedWidth="0"
+                >
                     <Menu
                         className="app_menu"
-                        theme="dark"
-                        mode="horizontal"
+                        theme="dark" mode="inline"
                         defaultSelectedKeys={['1']}
                         items={items}
-                        style={{ flex: 1, minWidth: 0 }}
                     />
-                </Header>
-                <Content>
-                    <Outlet />
-                </Content>
-                <Footer
-                    style={{
-                        textAlign: 'center',
-                        userSelect: 'none'
-                    }}
-                >
-                    Powered by Ant Design ©{new Date().getFullYear()} Developed by Group 12
-                </Footer>
+                </Sider>
+                <Layout>
+                    <Header
+                        className="app_header">
+                        <Menu
+                            className="app_menu"
+                            theme="dark"
+                            mode="horizontal"
+                            defaultSelectedKeys={['1']}
+                            items={items}
+                            style={{ flex: 1, minWidth: 0 }}
+                        />
+                    </Header>
+                    <Content>
+                        <Outlet />
+                    </Content>
+                    <Footer
+                        style={{
+                            textAlign: 'center',
+                            userSelect: 'none'
+                        }}
+                    >
+                        Powered by Ant Design ©{new Date().getFullYear()} Developed by Group 12
+                    </Footer>
+                </Layout>
             </Layout>
-        </Layout>
+        </QueryClientProvider>
     );
 };
-export default App;

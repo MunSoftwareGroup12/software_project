@@ -1,24 +1,41 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
+import { useQuery } from 'react-query';
 import * as THREE from "three";
 import * as TWEEN from '@tweenjs/tween.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
-import { throttle } from '../utils/tool'
+import { throttle, displayRender } from '../utils/tool'
 import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
-import { Flex, Cascader, FloatButton, Modal, Drawer, Select, Card, Tooltip, Button } from 'antd';
+import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button } from 'antd';
+import RouteItem from '../components/RouteItem';
 import './Map.css';
 
-import { difficultyOptions, options, testArr, testAddArr } from '../utils/test'
+import { difficultyOptions, options } from '../utils/test'
+import responseData1 from "../utils/testData1.json";
+import responseData2 from "../utils/testData2.json";
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
   logarithmicDepthBuffer: true, // Logarithmic depth buffer
 });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-
-export default function MapView() {
+async function fetchMyData() {
+  try {
+    // const response = await fetch('../utils/testData2.json');
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const data = await response.json();
+    console.log(data)
+    return data;
+  } catch (error) {
+    throw new Error('Error fetching data: ' + error.message);
+  }
+}
+export default function Map() {
   const [startLocation, setStartLocation] = useState(null);
   const [endLocation, setEndLocation] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
@@ -26,7 +43,8 @@ export default function MapView() {
   const [additionalShow, setAdditionalShow] = useState(false); //indicate if there displays additional map search objs
   const [loadings, setLoadings] = useState([]);
   const [pannelOpen, setPannelOpen] = useState(false);
-  const [isModalOpen, setIsModalOpen] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectRoute, setSelectRoute] = useState(1);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
@@ -36,6 +54,10 @@ export default function MapView() {
   const selectedObjRef = useRef(null);
   const basicShowRef = useRef([]); // an array to save basic map search objs
   const additionalShowRef = useRef([]); //an array to save additional map search objs
+
+  const { data, error, isLoading } = useQuery('myData', fetchMyData, {
+    enabled: false, // 设置为 false，不在组件渲染时立即触发查询
+  });
 
   const sphereTest = useRef(null);
 
@@ -96,7 +118,7 @@ export default function MapView() {
         sceneRef.current.add(model);
       })
       // creatLocation(3, 5, -3);
-      creatLocationArray(testArr)
+      creatLocationArray(responseData1)
     }
 
     // Update the camera and renderer
@@ -111,7 +133,7 @@ export default function MapView() {
       renderer.setSize(element.clientWidth, element.clientHeight);
     };
 
-    // Click event
+    // Click event on the map
     const onClick = (event) => {
       // Only when click on canvas
       if (event.target.closest('.container')) {
@@ -130,11 +152,9 @@ export default function MapView() {
           let material = new THREE.MeshLambertMaterial({ color: 0xFFD700, emissive: 0xFFD700 });
           selectedObjRef.current = new THREE.Mesh(selectedObject.geometry, material);
           selectedObjRef.current.position.copy(selectedObject.position);
-          if (selectedObject.userData.type == 'R') {
+          if (selectedObject.userData.type === 'R') {
             selectedObjRef.current.lookAt(selectedObject.userData.D1);
           }
-          console.log(selectedObject)
-          console.log(selectedObjRef.current)
           sceneRef.current.add(selectedObjRef.current);
           // Show UI pannel
           document.getElementById('selectedInfo').style.display = 'block';
@@ -297,10 +317,8 @@ export default function MapView() {
     console.log(sphereTest.current.position)
   }
 
-  const displayRender = (labels) => labels[labels.length - 1];
-
   // Cascader onchange
-  const onChange = (value, index) => {
+  const inputOptionsChange = (value, index) => {
     console.log(value, index);
     switch (index) {
       case 0: setStartLocation(value); break;
@@ -311,59 +329,78 @@ export default function MapView() {
   };
 
   // Search for avaliable route
-  const searchRoute = (index) => {
-    console.log("searchRoute")
+  // const searchRoute = (index) => {
+  //   console.log("searchRoute")
+  //   setLoadings((prevLoadings) => {
+  //     const newLoadings = [...prevLoadings];
+  //     newLoadings[index] = true;
+  //     return newLoadings;
+  //   });
+  //   setTimeout(() => {
+  //     setLoadings((prevLoadings) => {
+  //       const newLoadings = [...prevLoadings];
+  //       newLoadings[index] = false;
+  //       return newLoadings;
+  //     });
+  //     setPannelOpen(false);
+  //     setIsModalOpen(true);
+  //   }, 2000);
+  // };
+
+  const searchRoute = async (index) => {
+    console.log("searchRoute");
     setLoadings((prevLoadings) => {
       const newLoadings = [...prevLoadings];
       newLoadings[index] = true;
       return newLoadings;
     });
-    setTimeout(() => {
+
+    try {
+      await fetchMyData();
+      console.log('Data fetched successfully:', data);
       setLoadings((prevLoadings) => {
         const newLoadings = [...prevLoadings];
         newLoadings[index] = false;
         return newLoadings;
       });
-      setPannelOpen(false)
+      setPannelOpen(false);
       setIsModalOpen(true);
-    }, 2000);
+    } catch (error) {
+      console.error('Error fetching data:', error.message);
+    }
   };
 
   // Clear the existed additional map reach objs
   const clearShow = (opacity) => {
-    console.log("clearShow", basicShowRef.current.length)
     basicShowRef.current.forEach(obj => {
       obj.material.opacity = opacity;
       obj.material.transparent = opacity < 1 ? true : false;
       obj.material.needsUpdate = true;
     });
-
-    additionalShowRef.current.forEach(obj => {
-      sceneRef.current.remove(obj);
-    });
+    additionalShowRef.current.forEach(obj => { sceneRef.current.remove(obj); });
     additionalShowRef.current = [];
     setAdditionalShow(false);
   }
 
   // Reset to the Status before seach
   const resetShow = () => {
-    console.log("resetShow")
     clearShow(1);
     setStartLocation(undefined);
     setEndLocation(undefined);
   }
 
-  // Deside which routes to display
+  // Deside which route to display
   const selectOneRoute = () => {
     clearShow(0.2);
     additionalShowRef.current = [];
-    creatLocationArray(testAddArr[1], false);
+    creatLocationArray(responseData2.testAddArr[selectRoute - 1], false);
     setIsModalOpen(false);
   }
+
   return (
     <div>
       <div className="container" ref={containerRef}></div>
-      {/* Movecontroller of the map */}
+      {/* Map movecontroller */}
       <Flex className='moveControler' vertical={true} align="center" >
         <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px' }} onClick={() => { throttledMove('F') }} />
         <Flex>
@@ -372,11 +409,11 @@ export default function MapView() {
         </Flex>
         <CaretDownOutlined id="dirKey_down" style={{ fontSize: '40px' }} onClick={() => { throttledMove('B') }} />
       </Flex>
-      {/* Action button group */}
+      {/* Float action button group */}
       <FloatButton.Group shape="circle" style={{ right: 24, bottom: 50 }}>
         <FloatButton type="primary" icon={<SearchOutlined />} onClick={() => { setPannelOpen(true) }} />
         {additionalShow && <FloatButton icon={<CloseOutlined />} onClick={resetShow} />}
-        {additionalShow && <FloatButton />}
+        {additionalShow && <FloatButton onClick={() => { setIsModalOpen(true); }} />}
       </FloatButton.Group>
       {/* Location information card */}
       <Card
@@ -391,39 +428,30 @@ export default function MapView() {
       >
         <p>{card.description}</p>
       </Card>
-      {/* Search panel */}
+      {/* Routes search panel */}
       <Drawer
-        title="Search Best Routes"
-        placement={"bottom"}
-        maskClosable={false}
-        closable={false}
-        extra={<CloseOutlined onClick={() => { setPannelOpen(false) }} />}
-        open={pannelOpen}
+        title="Search Best Routes" placement={"bottom"} extra={<CloseOutlined onClick={() => { setPannelOpen(false) }} />}
+        maskClosable={false} closable={false} open={pannelOpen}
       >
         <Flex className="searchAreaBox" justify="center">
           <Flex className="searchArea" justify="center" wrap="wrap" gap="small">
             <Cascader
               className='searchItem' expandTrigger="hover" placeholder="Choose Start Loction" size="large"
-              options={options}
-              value={startLocation}
-              displayRender={displayRender}
-              onChange={(value) => onChange(value, 0)}
+              options={options} value={startLocation} displayRender={displayRender}
+              onChange={(value) => inputOptionsChange(value, 0)}
             />
             <Cascader
               className='searchItem' expandTrigger="hover" placeholder="Choose End Loction" size="large"
-              options={options}
-              value={endLocation}
-              displayRender={displayRender}
-              onChange={(value) => onChange(value, 1)}
+              options={options} value={endLocation} displayRender={displayRender}
+              onChange={(value) => inputOptionsChange(value, 1)}
             />
             <Select
               className='searchItem' mode="multiple" placeholder="Difficulty Preference(mutiple)" size="large"
-              allowClear
-              options={difficultyOptions}
-              onChange={(value) => onChange(value, 2)}
+              options={difficultyOptions} allowClear
+              onChange={(value) => inputOptionsChange(value, 2)}
             />
-            <Button className='searchButton' type="primary" size="large"
-              loading={loadings[1]} onClick={() => searchRoute(1)} icon={<SearchOutlined />} >
+            <Button className='searchButton' type="primary" size="large" icon={<SearchOutlined />}
+              loading={loadings[1]} onClick={() => searchRoute(1)}>
               Search
             </Button>
           </Flex>
@@ -432,9 +460,18 @@ export default function MapView() {
       {/* Routes select panel */}
       <Modal title="Select Routes" okText="Display" cancelText="Cancel"
         open={isModalOpen} onOk={selectOneRoute} onCancel={() => { setIsModalOpen(false) }} >
-        <p>Some contents...</p>
-        <p>Some contents...</p>
-        <p>Some contents...</p>
+        <Tabs
+          tabPosition={"left"}
+          activeKey={selectRoute}
+          onChange={(value) => { setSelectRoute(value) }}
+          items={responseData2.testAddArr.map((item) => {
+            return {
+              label: item.tag,
+              key: item.id,
+              children: <RouteItem routeData={item} />,
+            };
+          })}
+        />
       </Modal>
       {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>

@@ -1,6 +1,6 @@
 import React from 'react';
 
-export default function Sorry() {
+export default function NotYet() {
   return (
     <div>
       <h1>Oops! This page is still on the to-do list!
