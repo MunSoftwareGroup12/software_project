@@ -24,7 +24,7 @@ renderer.toneMapping = THREE.ACESFilmicToneMapping;
 async function fetchMyData() {
   try {
     // const response = await fetch('../utils/testData2.json');
-    const response = await fetch('https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/routes');
+    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
     if (!response.ok) {
       throw new Error('Network response was not ok');
     }
