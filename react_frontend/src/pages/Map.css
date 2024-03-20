@@ -1,0 +1,49 @@
+.searchBox {
+    position: absolute;
+    background: white;
+    bottom: 0;
+}
+
+.searchAreaBox {
+    width: 100%;
+}
+
+.searchArea {
+    width: 100%;
+    max-width: 600px;
+    padding-bottom: 1rem;
+}
+
+.searchItem {
+    width: 80%;
+}
+
+.searchButton {
+    width: 80%;
+    margin-top: 1rem;
+}
+
+.container {
+    position: relative;
+}
+
+.moveControler {
+    transform: translateY(-120px);
+}
+
+.moveControler>div {
+    gap: 40px;
+}
+
+#selectedInfo {
+    width: 35%;
+    min-width: 175px;
+    max-width: 300px;
+    position: absolute;
+    display: none;
+    user-select: none;
+}
+
+.ant-spin-fullscreen{
+    backdrop-filter: blur(15px);
+}

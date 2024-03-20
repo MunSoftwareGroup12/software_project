@@ -23,8 +23,9 @@
     .app_header {
         display: flex;
         align-items: center;
-        position: sticky;
+        position: fixed;
+        width: 100%;
         top: 0;
-        z-Index: 1;
+        z-Index: 1001;
     }
 }
