@@ -12,7 +12,7 @@ const router = createBrowserRouter([
     path: "/",
     element: <App />,
     children: [
-      { path: "/", element: <Navigate to="/home" /> },
+      { path: "/", element: <Navigate to="/map" /> },
       { path: "home", element: <Home /> },
       { path: "map", element: <Map /> },
       { path: "notYet", element: <NotYet /> }

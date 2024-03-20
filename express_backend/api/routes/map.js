@@ -1,5 +1,4 @@
 var express = require('express');
-const connectDB = require('../../lib/connectDb');
 var router = express.Router();
 
 const mapData = {
@@ -59,7 +58,6 @@ const mapData = {
 
 /* GET home page. */
 router.get('/', async function (req, res, next) {
-    await connectDB();
     res.json(mapData);
 });
 
