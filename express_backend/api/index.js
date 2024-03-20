@@ -3,9 +3,9 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
-const routes = require('./routes/routes');
 const indexRouter = require('./routes/index');
-const usersRouter = require('./routes/users');
+const calculatedRoutesRouter = require('./routes/calculated-routes');
+const mapRouter = require('./routes/map');
 const cors = require('cors')
 
 var app = express();
@@ -18,7 +18,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use('/routes', routes);
+app.use('/calculated-routes', calculatedRoutesRouter);
+app.use('/map', mapRouter);
 
 module.exports = app;
