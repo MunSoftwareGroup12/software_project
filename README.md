@@ -2,6 +2,10 @@
 
 This repository contains the software engineering project developed by Group 12.
 
+# Live Demo
+
+https://mun-comp-6905-group-12-ski-routing-app.vercel.app/map
+
 ## Directory Structure
 
 - `doc`: This directory contains all the project-related documents and diagrams.
