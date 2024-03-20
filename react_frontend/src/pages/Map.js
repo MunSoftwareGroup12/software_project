@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useQuery } from 'react-query';
 import * as THREE from "three";
 import * as TWEEN from '@tweenjs/tween.js';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
@@ -7,41 +6,29 @@ import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
 import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
+import { fetchData } from '../api/request'
 import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
-import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button } from 'antd';
+import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import './Map.css';
 
 import { difficultyOptions, options } from '../utils/test'
 import responseData1 from "../utils/testData1.json";
-import responseData2 from "../utils/testData2.json";
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
   logarithmicDepthBuffer: true, // Logarithmic depth buffer
 });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
-async function fetchMyData() {
-  try {
-    // const response = await fetch('../utils/testData2.json');
-    const response = await fetch('https://jsonplaceholder.typicode.com/posts');
-    if (!response.ok) {
-      throw new Error('Network response was not ok');
-    }
-    const data = await response.json();
-    console.log(data)
-    return data;
-  } catch (error) {
-    throw new Error('Error fetching data: ' + error.message);
-  }
-}
 export default function Map() {
+  const [totalInfo, setTotalInfo] = useState([]); //total locations and routes information
+  const [caculateRoutes, setCaculateRoutes] = useState([]); //caculate routes information
   const [startLocation, setStartLocation] = useState(null);
   const [endLocation, setEndLocation] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
   const [card, setCard] = useState({}); //selectedObj information
   const [additionalShow, setAdditionalShow] = useState(false); //indicate if there displays additional map search objs
-  const [loadings, setLoadings] = useState([]);
+  const [loadings, setLoadings] = useState([true, false]);
   const [pannelOpen, setPannelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectRoute, setSelectRoute] = useState(1);
@@ -54,17 +41,29 @@ export default function Map() {
   const selectedObjRef = useRef(null);
   const basicShowRef = useRef([]); // an array to save basic map search objs
   const additionalShowRef = useRef([]); //an array to save additional map search objs
-
-  const { data, error, isLoading } = useQuery('myData', fetchMyData, {
-    enabled: false, // 设置为 false，不在组件渲染时立即触发查询
-  });
+  const [messageApi, contextHolder] = message.useMessage();
 
   const sphereTest = useRef(null);
 
   useEffect(() => {
     let animationFrameId;
     let needUpdate = false; // flag whether the selected ui should be updated
-
+    // Search for the routes
+    const getDataInfo = async (index) => {
+      console.log("getDataInfo");
+      try {
+        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/");
+        // setTotalInfo(data);
+        creatLocationArray(data)
+        setLoadings(getLoading(0, false))
+      } catch (error) {
+        setLoadings(getLoading(0, false))
+        messageApi.open({
+          type: 'error',
+          content: error.message,
+        });
+      }
+    };
     // Initialize the environment
     const InitializeEnv = () => {
       // Initialize the scene
@@ -116,9 +115,11 @@ export default function Map() {
         model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
         model.position.set(-14, -5, 15);
         sceneRef.current.add(model);
+        getDataInfo()
+
       })
       // creatLocation(3, 5, -3);
-      creatLocationArray(responseData1)
+      // creatLocationArray(responseData1)
     }
 
     // Update the camera and renderer
@@ -219,6 +220,10 @@ export default function Map() {
     sphereTest.current.position.set(x, y, z)
     sceneRef.current.add(sphereTest.current);
   }, [])
+  const changeTest = (x, y, z) => {
+    sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
+    console.log(sphereTest.current.position)
+  }
 
   // Create mesh by location
   const creatLocationArray = useCallback((Arr, baisc = true) => {
@@ -311,12 +316,6 @@ export default function Map() {
     sceneRef.current.remove(selectedObjRef.current);
   }
 
-  // Only for test
-  const changeTest = (x, y, z) => {
-    sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
-    console.log(sphereTest.current.position)
-  }
-
   // Cascader onchange
   const inputOptionsChange = (value, index) => {
     console.log(value, index);
@@ -328,45 +327,28 @@ export default function Map() {
     }
   };
 
-  // Search for avaliable route
-  // const searchRoute = (index) => {
-  //   console.log("searchRoute")
-  //   setLoadings((prevLoadings) => {
-  //     const newLoadings = [...prevLoadings];
-  //     newLoadings[index] = true;
-  //     return newLoadings;
-  //   });
-  //   setTimeout(() => {
-  //     setLoadings((prevLoadings) => {
-  //       const newLoadings = [...prevLoadings];
-  //       newLoadings[index] = false;
-  //       return newLoadings;
-  //     });
-  //     setPannelOpen(false);
-  //     setIsModalOpen(true);
-  //   }, 2000);
-  // };
-
-  const searchRoute = async (index) => {
-    console.log("searchRoute");
-    setLoadings((prevLoadings) => {
-      const newLoadings = [...prevLoadings];
-      newLoadings[index] = true;
-      return newLoadings;
-    });
-
+  // Get loading status
+  const getLoading = (index, status) => {
+    const newLoadings = [...loadings];
+    newLoadings[index] = status;
+    return newLoadings;
+  }
+  // Search for the routes
+  const searchRoutes = async (index) => {
+    console.log("searchRoutes");
+    setLoadings(getLoading(index, true))
     try {
-      await fetchMyData();
-      console.log('Data fetched successfully:', data);
-      setLoadings((prevLoadings) => {
-        const newLoadings = [...prevLoadings];
-        newLoadings[index] = false;
-        return newLoadings;
-      });
+      const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/routes");
+      setCaculateRoutes(data.testAddArr);
+      setLoadings(getLoading(index, false))
       setPannelOpen(false);
       setIsModalOpen(true);
     } catch (error) {
-      console.error('Error fetching data:', error.message);
+      setLoadings(getLoading(index, false))
+      messageApi.open({
+        type: 'error',
+        content: error.message,
+      });
     }
   };
 
@@ -393,13 +375,15 @@ export default function Map() {
   const selectOneRoute = () => {
     clearShow(0.2);
     additionalShowRef.current = [];
-    creatLocationArray(responseData2.testAddArr[selectRoute - 1], false);
+    creatLocationArray(caculateRoutes[selectRoute - 1], false);
     setIsModalOpen(false);
   }
 
   return (
     <div>
+      <Spin spinning={loadings[0]} fullscreen />
       <div className="container" ref={containerRef}></div>
+      {contextHolder}
       {/* Map movecontroller */}
       <Flex className='moveControler' vertical={true} align="center" >
         <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px' }} onClick={() => { throttledMove('F') }} />
@@ -451,7 +435,7 @@ export default function Map() {
               onChange={(value) => inputOptionsChange(value, 2)}
             />
             <Button className='searchButton' type="primary" size="large" icon={<SearchOutlined />}
-              loading={loadings[1]} onClick={() => searchRoute(1)}>
+              loading={loadings[1]} onClick={() => searchRoutes(1)}>
               Search
             </Button>
           </Flex>
@@ -464,7 +448,7 @@ export default function Map() {
           tabPosition={"left"}
           activeKey={selectRoute}
           onChange={(value) => { setSelectRoute(value) }}
-          items={responseData2.testAddArr.map((item) => {
+          items={caculateRoutes.map((item) => {
             return {
               label: item.tag,
               key: item.id,
