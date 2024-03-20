@@ -52,7 +52,7 @@ export default function Map() {
     const getDataInfo = async (index) => {
       console.log("getDataInfo");
       try {
-        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/");
+        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
         // setTotalInfo(data);
         creatLocationArray(data)
         setLoadings(getLoading(0, false))
@@ -338,7 +338,7 @@ export default function Map() {
     console.log("searchRoutes");
     setLoadings(getLoading(index, true))
     try {
-      const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/routes");
+      const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculated-routes");
       setCaculateRoutes(data.testAddArr);
       setLoadings(getLoading(index, false))
       setPannelOpen(false);
