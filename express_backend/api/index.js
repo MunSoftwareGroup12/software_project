@@ -6,7 +6,7 @@ var logger = require('morgan');
 const indexRouter = require('./routes/index');
 const calculatedRoutesRouter = require('./routes/calculated-routes');
 const mapRouter = require('./routes/map');
-const cors = require('cors')
+const cors = require('cors');
 
 var app = express();
 
