@@ -43,3 +43,7 @@
     display: none;
     user-select: none;
 }
+
+.ant-spin-fullscreen{
+    backdrop-filter: blur(15px);
+}

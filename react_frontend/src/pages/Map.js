@@ -7,13 +7,14 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
 import { fetchData } from '../api/request'
-import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, SmileOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import './Map.css';
 
 import { difficultyOptions, options } from '../utils/test'
 import responseData1 from "../utils/testData1.json";
+import responseData2 from "../utils/testData2.json";
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
@@ -21,7 +22,6 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 export default function Map() {
-  const [totalInfo, setTotalInfo] = useState([]); //total locations and routes information
   const [caculateRoutes, setCaculateRoutes] = useState([]); //caculate routes information
   const [startLocation, setStartLocation] = useState(null);
   const [endLocation, setEndLocation] = useState(null);
@@ -31,6 +31,7 @@ export default function Map() {
   const [loadings, setLoadings] = useState([true, false]);
   const [pannelOpen, setPannelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isTipsOpen, setIsTipsOpen] = useState(false);
   const [selectRoute, setSelectRoute] = useState(1);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -48,14 +49,15 @@ export default function Map() {
   useEffect(() => {
     let animationFrameId;
     let needUpdate = false; // flag whether the selected ui should be updated
+
     // Search for the routes
     const getDataInfo = async (index) => {
-      console.log("getDataInfo");
       try {
         const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
-        // setTotalInfo(data);
+        // const data = responseData1
         creatLocationArray(data)
         setLoadings(getLoading(0, false))
+        setIsTipsOpen(true)
       } catch (error) {
         setLoadings(getLoading(0, false))
         messageApi.open({
@@ -69,11 +71,8 @@ export default function Map() {
       // Initialize the scene
       sceneRef.current = new THREE.Scene();
       // Add camera
-
       let element = document.documentElement;
       cameraRef.current = new THREE.PerspectiveCamera(75, element.clientWidth / element.clientHeight, 0.1, 2000);
-      // let width = document.documentElement.clientWidth;
-      // cameraRef.current = new THREE.PerspectiveCamera(75, width / Math.max(width * 0.4, 600), 0.1, 2000);
       cameraRef.current.position.set(-13, 5, -2);
       sceneRef.current.add(cameraRef.current)
       //Load environment texture
@@ -101,10 +100,6 @@ export default function Map() {
 
     // Initialize the extra objects in environment
     const InitializeObject = () => {
-      // Add coordinate system
-      // var axesHelper = new THREE.AxesHelper(50);
-      // sceneRef.current.add(axesHelper);
-      // //Add show montain model
       const loader = new GLTFLoader();
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("/draco/")
@@ -118,8 +113,6 @@ export default function Map() {
         getDataInfo()
 
       })
-      // creatLocation(3, 5, -3);
-      // creatLocationArray(responseData1)
     }
 
     // Update the camera and renderer
@@ -127,10 +120,7 @@ export default function Map() {
       console.log("updateCameraAndRenderer");
       let element = document.documentElement;
       cameraRef.current.aspect = element.clientWidth / element.clientHeight;
-      // let width = document.documentElement.clientWidth;
-      // cameraRef.current.aspect = width / Math.max(width * 0.4, 600);
       cameraRef.current.updateProjectionMatrix();
-      // renderer.setSize(width, Math.max(width * 0.4, 600));
       renderer.setSize(element.clientWidth, element.clientHeight);
     };
 
@@ -339,6 +329,7 @@ export default function Map() {
     setLoadings(getLoading(index, true))
     try {
       const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculated-routes");
+      // const data = responseData2
       setCaculateRoutes(data.testAddArr);
       setLoadings(getLoading(index, false))
       setPannelOpen(false);
@@ -381,7 +372,7 @@ export default function Map() {
 
   return (
     <div>
-      <Spin spinning={loadings[0]} fullscreen />
+      <Spin spinning={loadings[0]} fullscreen tip="loading..." />
       <div className="container" ref={containerRef}></div>
       {contextHolder}
       {/* Map movecontroller */}
@@ -456,6 +447,12 @@ export default function Map() {
             };
           })}
         />
+      </Modal>
+      <Modal title="How to caculate a route?" okText="Got it!" cancelButtonProps={{ style: { display: 'none' } }}
+        closeIcon={false} open={isTipsOpen} onOk={() => { setIsTipsOpen(false) }}
+      >
+        <p>Click on a location to set as start or end maunally.</p>
+        <p>Or click the Search icon in the bottom right to set start and end from a list.</p>
       </Modal>
       {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
