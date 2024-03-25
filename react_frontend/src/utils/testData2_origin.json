@@ -1,0 +1,77 @@
+{
+    "locations": [
+        {
+            "id": "L007",
+            "name": "Icicle",
+            "type": "L",
+            "description": "this is a snow location",
+            "x": 3.9,
+            "y": 2.7,
+            "z": -2.8
+        },
+        {
+            "id": "L012",
+            "name": "Eaglepeak",
+            "type": "L",
+            "description": "this is a snow location",
+            "x": -4,
+            "y": -1,
+            "z": -5
+        },
+        {
+            "id": "S002",
+            "name": "Asian sushi",
+            "type": "S",
+            "description": "this is a Asian restaurant",
+            "x": -4.1,
+            "y": -1.4,
+            "z": -1.4
+        }
+    ],
+    "routes": [
+        {
+            "id": "R001",
+            "difficulty": 2,
+            "locs": [
+                {
+                    "id": "L007",
+                    "x": 3.9,
+                    "y": 2.7,
+                    "z": -2.8
+                },
+                {
+                    "id": "L010",
+                    "x": 1,
+                    "y": 0.9,
+                    "z": -5.4
+                },
+                {
+                    "id": "L012",
+                    "x": -4,
+                    "y": -1,
+                    "z": -5
+                }
+            ],
+            "description": "this is a route from L001 and L008"
+        },
+        {
+            "id": "R002",
+            "difficulty": 0,
+            "locs": [
+                {
+                    "id": "L012",
+                    "x": -4,
+                    "y": -1,
+                    "z": -5
+                },
+                {
+                    "id": "S002",
+                    "x": -4.1,
+                    "y": -1.4,
+                    "z": -1.4
+                }
+            ],
+            "description": "this is a route from L001 and L008"
+        }
+    ]
+}
