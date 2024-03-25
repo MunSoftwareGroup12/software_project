@@ -13,8 +13,8 @@ import RouteItem from '../components/RouteItem';
 import './Map.css';
 
 import { difficultyOptions, options } from '../utils/test'
-import responseData1 from "../utils/testData1.json";
-import responseData2 from "../utils/testData2.json";
+import originData from "../utils/testData2_origin.json";
+import caculateData from "../utils/testData2_caculate.json";
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
@@ -48,18 +48,17 @@ export default function Map() {
 
   useEffect(() => {
     let animationFrameId;
-    let needUpdate = false; // flag whether the selected ui should be updated
 
     // Search for the routes
     const getDataInfo = async (index) => {
       try {
-        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
-        // const data = responseData1
-        creatLocationArray(data)
-        setLoadings(getLoading(0, false))
-        setIsTipsOpen(true)
+        //const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
+        const data = originData;
+        creatLocationArray(data);
+        setLoadings(getLoading(0, false));
+        // setIsTipsOpen(true);
       } catch (error) {
-        setLoadings(getLoading(0, false))
+        setLoadings(getLoading(0, false));
         messageApi.open({
           type: 'error',
           content: error.message,
@@ -110,8 +109,7 @@ export default function Map() {
         model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
         model.position.set(-14, -5, 15);
         sceneRef.current.add(model);
-        getDataInfo()
-
+        getDataInfo();
       })
     }
 
@@ -143,14 +141,15 @@ export default function Map() {
           let material = new THREE.MeshLambertMaterial({ color: 0xFFD700, emissive: 0xFFD700 });
           selectedObjRef.current = new THREE.Mesh(selectedObject.geometry, material);
           selectedObjRef.current.position.copy(selectedObject.position);
-          if (selectedObject.userData.type === 'R') {
-            selectedObjRef.current.lookAt(selectedObject.userData.D1);
-          }
           sceneRef.current.add(selectedObjRef.current);
-          // Show UI pannel
-          document.getElementById('selectedInfo').style.display = 'block';
+          // Set the UI of selected object
+          let info = document.getElementById('selectedInfo');
+          let cardX = event.clientX;
+          let cardY = event.clientY - info.offsetHeight;
+          info.style.display = 'block';
+          info.style.left = ((cardX > document.documentElement.clientWidth * 0.7) ? cardX - info.offsetWidth : cardX) + 'px';
+          info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           setCard(intersects[0].object.userData);
-          needUpdate = true;
         }
       }
     }
@@ -160,26 +159,7 @@ export default function Map() {
       console.log("render");
       TWEEN.update();
       renderer.render(sceneRef.current, cameraRef.current);
-      // Set the UI of selected object
-      let info = document.getElementById('selectedInfo');
-      if (needUpdate) {
-        let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
-        if (intersects.length > 0) {
-          let vector = new THREE.Vector3();
-          vector.setFromMatrixPosition(intersects[0].object.matrixWorld);
-          vector.project(cameraRef.current);
-          let rect = renderer.domElement.getBoundingClientRect();
-          let windowWidth = document.documentElement.clientWidth;
-          let cardX = rect.left + (vector.x + 1) / 2 * rect.width;
-          let cardY = rect.top - (vector.y - 1) / 2 * rect.height - info.offsetHeight;
-          // Adjust the card position
-          info.style.left = ((cardX > windowWidth * 0.7) ? cardX - info.offsetWidth : cardX) + 'px';
-          info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
-          needUpdate = false;
-        }
-      }
-      // Request for next animation frame
-      animationFrameId = requestAnimationFrame(render);
+      animationFrameId = requestAnimationFrame(render);// Request for next animation frame
     };
 
     InitializeEnv();
@@ -217,9 +197,10 @@ export default function Map() {
 
   // Create mesh by location
   const creatLocationArray = useCallback((Arr, baisc = true) => {
+    // Create locations
+    let location = Arr.locations;
     let SphereGeometry = new THREE.SphereGeometry(0.4, 32, 32);
     let material_loc = new THREE.MeshBasicMaterial({ color: 0x0287fc });
-    let location = Arr.locations;
     for (let i = 0; i < location.length; i++) {
       let sphere = new THREE.Mesh(SphereGeometry, material_loc);
       sphere.position.set(location[i].x, location[i].y, location[i].z);
@@ -228,36 +209,26 @@ export default function Map() {
       sceneRef.current.add(sphere);
       baisc ? basicShowRef.current.push(sphere) : additionalShowRef.current.push(sphere);
     }
+    // Create routes
     let route = Arr.routes;
     let material_arr = [
-      new THREE.MeshBasicMaterial({ color: 0x5f5f5f }), //grey
+      // new THREE.MeshBasicMaterial({ color: 0x5f5f5f }), //grey
       new THREE.MeshBasicMaterial({ color: 0x008a00 }), //green
       new THREE.MeshBasicMaterial({ color: 0x00008a }), //blue
       new THREE.MeshBasicMaterial({ color: 0x8a0000 }), //red
       new THREE.MeshBasicMaterial({ color: 0x000000 }) //black
     ];
     for (let i = 0; i < route.length; i++) {
-      let D1 = new THREE.Vector3(route[i].D1.x, route[i].D1.y, route[i].D1.z);
-      let D2 = new THREE.Vector3(route[i].D2.x, route[i].D2.y, route[i].D2.z);
-      let BoxGeometry = new THREE.BoxGeometry(0.2, 0.2, D1.distanceTo(D2));
-      let box = new THREE.Mesh(BoxGeometry, material_arr[route[i].difficulty]);
-      let midpoint = new THREE.Vector3().addVectors(D1, D2).multiplyScalar(0.5);
-      box.position.copy(midpoint);
-      box.lookAt(D1);
-      box.userData.D1 = D1;
-      if (route[i].lineSegmentType) {
-        let direction = new THREE.Vector3().subVectors(D2, D1).normalize(); // compute the vector between two locations
-        let normal = new THREE.Vector3().crossVectors(direction, new THREE.Vector3(0, 1, 0)).normalize(); // compute normal vector
-        let displacement = new THREE.Vector3().copy(normal).multiplyScalar(0.15 * route[i].lineSegmentType); // compute the displacement vector
-        box.position.copy(new THREE.Vector3().addVectors(midpoint, displacement));
-        box.userData.D1 = D1.addVectors(D1, displacement);
-      }
-      box.userData.dispalyName = route[i].id + " (" + route[i].D1.id + ' ⇄ ' + route[i].D2.id + ")";
-      box.userData.id = route[i].id;
-      box.userData.type = 'R';
-      box.userData.description = route[i].description;
-      sceneRef.current.add(box);
-      baisc ? basicShowRef.current.push(box) : additionalShowRef.current.push(box);
+      const points = route[i].locs.map(loc => new THREE.Vector3(loc.x, loc.y, loc.z))
+      const path = new THREE.CatmullRomCurve3(points);
+      const tubeGeometry = new THREE.TubeGeometry(path, 50, 0.1, 3, false);
+      const tubeMesh = new THREE.Mesh(tubeGeometry, material_arr[route[i].difficulty]);
+      tubeMesh.userData.dispalyName = route[i].id;
+      tubeMesh.userData.id = route[i].id;
+      tubeMesh.userData.type = 'R';
+      tubeMesh.userData.description = route[i].description;
+      sceneRef.current.add(tubeMesh);
+      baisc ? basicShowRef.current.push(tubeMesh) : additionalShowRef.current.push(tubeMesh);
     }
     if (!baisc) {
       setAdditionalShow(true);
@@ -287,12 +258,12 @@ export default function Map() {
       default: break;
     }
     let dir = direction.multiplyScalar(distance)
-    // 计算新的相机位置
+    // Compute new location of camera
     let newPosition = new THREE.Vector3();
     newPosition.copy(cameraRef.current.position);
     newPosition.add(dir);
     new TWEEN.Tween(cameraRef.current.position).to(newPosition, 300).easing(TWEEN.Easing.Quadratic.InOut).start();
-    // 计算新的固定点位置
+    // Compute new location of target point
     let newTarget = new THREE.Vector3();
     newTarget.copy(controlsRef.current.target);
     newTarget.add(dir);
@@ -328,10 +299,10 @@ export default function Map() {
     console.log("searchRoutes");
     setLoadings(getLoading(index, true))
     try {
-      const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculated-routes");
-      // const data = responseData2
+      //const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculated-routes");
+      const data = caculateData;
       setCaculateRoutes(data.testAddArr);
-      setLoadings(getLoading(index, false))
+      setLoadings(getLoading(index, false));
       setPannelOpen(false);
       setIsModalOpen(true);
     } catch (error) {
