@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
 import { fetchData } from '../api/request'
-import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, SmileOutlined, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import './Map.css';
@@ -134,6 +134,7 @@ export default function Map() {
         let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
         if (intersects.length > 0 && intersects[0].object.userData.id) {
           // Raycasting
+          console.log(intersects[0].object)
           let selectedObject = intersects[0].object;
           if (selectedObjRef.current) {
             sceneRef.current.remove(selectedObjRef.current);
@@ -205,7 +206,7 @@ export default function Map() {
       let sphere = new THREE.Mesh(SphereGeometry, material_loc);
       sphere.position.set(location[i].x, location[i].y, location[i].z);
       sphere.userData = location[i];
-      sphere.userData.dispalyName = location[i].id + " " + location[i].name;
+      sphere.userData.displayName = location[i].id + " " + location[i].name;
       sceneRef.current.add(sphere);
       baisc ? basicShowRef.current.push(sphere) : additionalShowRef.current.push(sphere);
     }
@@ -222,13 +223,11 @@ export default function Map() {
       const points = route[i].locs.map(loc => new THREE.Vector3(loc.x, loc.y, loc.z))
       const path = new THREE.CatmullRomCurve3(points);
       const tubeGeometry = new THREE.TubeGeometry(path, 50, 0.1, 3, false);
-      const tubeMesh = new THREE.Mesh(tubeGeometry, material_arr[route[i].difficulty]);
-      tubeMesh.userData.dispalyName = route[i].id;
-      tubeMesh.userData.id = route[i].id;
-      tubeMesh.userData.type = 'R';
-      tubeMesh.userData.description = route[i].description;
-      sceneRef.current.add(tubeMesh);
-      baisc ? basicShowRef.current.push(tubeMesh) : additionalShowRef.current.push(tubeMesh);
+      const tube = new THREE.Mesh(tubeGeometry, material_arr[route[i].difficulty]);
+      tube.userData = route[i];
+      tube.userData.displayName = route[i].id + " " + route[i].name;
+      sceneRef.current.add(tube);
+      baisc ? basicShowRef.current.push(tube) : additionalShowRef.current.push(tube);
     }
     if (!baisc) {
       setAdditionalShow(true);
@@ -357,21 +356,23 @@ export default function Map() {
       </Flex>
       {/* Float action button group */}
       <FloatButton.Group shape="circle" style={{ right: 24, bottom: 50 }}>
-        <FloatButton type="primary" icon={<SearchOutlined />} onClick={() => { setPannelOpen(true) }} />
+        <FloatButton type="primary" icon={<SearchOutlined />} onClick={() => { closeCard(); setPannelOpen(true); }} />
+        {additionalShow && <FloatButton onClick={() => { closeCard(); setIsModalOpen(true); }} />}
         {additionalShow && <FloatButton icon={<CloseOutlined />} onClick={resetShow} />}
-        {additionalShow && <FloatButton onClick={() => { setIsModalOpen(true); }} />}
       </FloatButton.Group>
       {/* Location information card */}
       <Card
         id="selectedInfo"
-        title={card.dispalyName}
+        // title={<p>{card.displayName}</p>}
+        title={<div>{card.displayName + ' '}{card.availability ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="#eb2f96" />}</div>}
         extra={<CloseOutlined onClick={() => { closeCard() }} />}
-        actions={[
-          < Tooltip title="set as start"><FlagFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
-          < Tooltip title="set as end"><HomeFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
-          < Tooltip title="details"><EllipsisOutlined key="ellipsis" /></Tooltip>,
-        ]}
+        actions={card.type === "L" ? [
+          < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
+          < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
+          // < Tooltip title="details"><EllipsisOutlined key="ellipsis" /></Tooltip>,
+        ] : []}
       >
+        {card.length && <p>length:{card.length + "m"}, slope:{card.slope + "°"}</p>}
         <p>{card.description}</p>
       </Card>
       {/* Routes search panel */}

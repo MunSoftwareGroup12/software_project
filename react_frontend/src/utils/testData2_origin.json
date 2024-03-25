@@ -4,6 +4,7 @@
             "id": "L007",
             "name": "Icicle",
             "type": "L",
+            "availability": true,
             "description": "this is a snow location",
             "x": 3.9,
             "y": 2.7,
@@ -13,6 +14,7 @@
             "id": "L012",
             "name": "Eaglepeak",
             "type": "L",
+            "availability": true,
             "description": "this is a snow location",
             "x": -4,
             "y": -1,
@@ -22,6 +24,7 @@
             "id": "S002",
             "name": "Asian sushi",
             "type": "S",
+            "availability": true,
             "description": "this is a Asian restaurant",
             "x": -4.1,
             "y": -1.4,
@@ -31,7 +34,12 @@
     "routes": [
         {
             "id": "R001",
+            "name": "Yopels",
+            "type": "R",
             "difficulty": 2,
+            "availability": true,
+            "length": 1500,
+            "slope": 15,
             "locs": [
                 {
                     "id": "L007",
@@ -56,7 +64,12 @@
         },
         {
             "id": "R002",
+            "name": "Mongles",
+            "type": "R",
             "difficulty": 0,
+            "availability": false,
+            "length": 500,
+            "slope": 25,
             "locs": [
                 {
                     "id": "L012",
