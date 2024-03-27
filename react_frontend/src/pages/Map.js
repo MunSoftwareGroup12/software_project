@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
 import { fetchData } from '../api/request'
-import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, EllipsisOutlined, FlagFilled } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import './Map.css';
@@ -72,7 +72,8 @@ export default function Map() {
       // Add camera
       let element = document.documentElement;
       cameraRef.current = new THREE.PerspectiveCamera(75, element.clientWidth / element.clientHeight, 0.1, 2000);
-      cameraRef.current.position.set(-13, 5, -2);
+      cameraRef.current.position.set(6.7, 6.5, 47.5);
+      // cameraRef.current.position.set(-9.5, 9.3, 32.5);
       sceneRef.current.add(cameraRef.current)
       //Load environment texture
       const hdrLoader = new RGBELoader()
@@ -85,16 +86,20 @@ export default function Map() {
       // Initialize the Orbit controller
       controlsRef.current = new OrbitControls(cameraRef.current, containerRef.current)
       controlsRef.current.enableDamping = true;
-      controlsRef.current.maxDistance = 20;
+      controlsRef.current.maxDistance = 30;
       controlsRef.current.minDistance = 10;
       controlsRef.current.addEventListener('change', function () {
         cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
       });
+      controlsRef.current.target.set(-6.6, 0, 39);
+      // controlsRef.current.target.set(-27.2, 0, 31.5);
+      controlsRef.current.update();
       // Initialize the mouse controller
       raycasterRef.current = new THREE.Raycaster();
       mouseRef.current = new THREE.Vector2();
       // Add renderer to container
       containerRef.current.appendChild(renderer.domElement);
+      creatLocation(-26.5, 3.3, 34.7);
     }
 
     // Initialize the extra objects in environment
@@ -186,7 +191,7 @@ export default function Map() {
   const creatLocation = useCallback((x, y, z) => {
     // Add a sphere geometry
     var geometry = new THREE.SphereGeometry(0.4, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
+    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
     sphereTest.current = new THREE.Mesh(geometry, material);
     sphereTest.current.position.set(x, y, z)
     sceneRef.current.add(sphereTest.current);
@@ -222,7 +227,7 @@ export default function Map() {
     for (let i = 0; i < route.length; i++) {
       const points = route[i].locs.map(loc => new THREE.Vector3(loc.x, loc.y, loc.z))
       const path = new THREE.CatmullRomCurve3(points);
-      const tubeGeometry = new THREE.TubeGeometry(path, 50, 0.1, 3, false);
+      const tubeGeometry = new THREE.TubeGeometry(path, route[i].locs.length * 15, 0.1, 3, false);
       const tube = new THREE.Mesh(tubeGeometry, material_arr[route[i].difficulty]);
       tube.userData = route[i];
       tube.userData.displayName = route[i].id + " " + route[i].name;
@@ -267,6 +272,10 @@ export default function Map() {
     newTarget.copy(controlsRef.current.target);
     newTarget.add(dir);
     controlsRef.current.target.copy(newTarget);
+    console.log("-----------------------")
+    console.log(newPosition)
+    console.log(newTarget)
+
   }, []);
   const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), [moveCameraAndTarget]);
 
@@ -293,6 +302,7 @@ export default function Map() {
     newLoadings[index] = status;
     return newLoadings;
   }
+
   // Search for the routes
   const searchRoutes = async (index) => {
     console.log("searchRoutes");
@@ -363,16 +373,15 @@ export default function Map() {
       {/* Location information card */}
       <Card
         id="selectedInfo"
-        // title={<p>{card.displayName}</p>}
         title={<div>{card.displayName + ' '}{card.availability ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="#eb2f96" />}</div>}
         extra={<CloseOutlined onClick={() => { closeCard() }} />}
-        actions={card.type === "L" ? [
-          < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
-          < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
-          // < Tooltip title="details"><EllipsisOutlined key="ellipsis" /></Tooltip>,
-        ] : []}
+        actions={card.type === "R" ? [] :
+          [
+            < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
+            < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
+          ]}
       >
-        {card.length && <p>length:{card.length + "m"}, slope:{card.slope + "°"}</p>}
+        {card.length && <p><b>Length: </b>{card.length + "m "}<b>Slope: </b>{card.slope + "°"}</p>}
         <p>{card.description}</p>
       </Card>
       {/* Routes search panel */}
@@ -383,12 +392,12 @@ export default function Map() {
         <Flex className="searchAreaBox" justify="center">
           <Flex className="searchArea" justify="center" wrap="wrap" gap="small">
             <Cascader
-              className='searchItem' expandTrigger="hover" placeholder="Choose Start Loction" size="large"
+              className='searchItem' expandTrigger="hover" placeholder="Select Start Loction" size="large"
               options={options} value={startLocation} displayRender={displayRender}
               onChange={(value) => inputOptionsChange(value, 0)}
             />
             <Cascader
-              className='searchItem' expandTrigger="hover" placeholder="Choose End Loction" size="large"
+              className='searchItem' expandTrigger="hover" placeholder="Select End Loction" size="large"
               options={options} value={endLocation} displayRender={displayRender}
               onChange={(value) => inputOptionsChange(value, 1)}
             />
@@ -397,7 +406,11 @@ export default function Map() {
               options={difficultyOptions} allowClear
               onChange={(value) => inputOptionsChange(value, 2)}
             />
-            <Button className='searchButton' type="primary" size="large" icon={<SearchOutlined />}
+            <Button className='searchItem' type="default" size="large" icon={<AimOutlined />}
+              onClick={() => setPannelOpen(false)}>
+              Choose locations on the map
+            </Button>
+            <Button className='searchItem' type="primary" size="large" icon={<SearchOutlined />}
               loading={loadings[1]} onClick={() => searchRoutes(1)}>
               Search
             </Button>
@@ -426,7 +439,7 @@ export default function Map() {
         <p>Click on a location to set as start or end maunally.</p>
         <p>Or click the Search icon in the bottom right to set start and end from a list.</p>
       </Modal>
-      {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
+      <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
       <button onClick={() => changeTest(0, 1, 0)}>y+</button>
       <button onClick={() => changeTest(0, -1, 0)}>y-</button>
@@ -437,7 +450,7 @@ export default function Map() {
       <button onClick={() => changeTest(0, 0.1, 0)}>``y+</button>
       <button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
       <button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
-      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button> */}
+      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button>
     </div >
   );
 }

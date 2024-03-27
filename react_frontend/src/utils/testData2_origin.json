@@ -1,24 +1,64 @@
 {
     "locations": [
         {
-            "id": "L007",
-            "name": "Icicle",
+            "id": "L001",
+            "name": "Dabsj",
             "type": "L",
             "availability": true,
             "description": "this is a snow location",
-            "x": 3.9,
-            "y": 2.7,
-            "z": -2.8
+            "x": -21.7,
+            "y": -0.7,
+            "z": 49.7
         },
         {
-            "id": "L012",
+            "id": "L002",
+            "name": "Icicle",
+            "type": "L",
+            "availability": true,
+            "description": "This is the first ski location!",
+            "x": -13,
+            "y": 0.5,
+            "z": 46.8
+        },
+        {
+            "id": "L003",
             "name": "Eaglepeak",
             "type": "L",
             "availability": true,
             "description": "this is a snow location",
-            "x": -4,
-            "y": -1,
-            "z": -5
+            "x": -1.9,
+            "y": -2.5,
+            "z": 46.5
+        },
+        {
+            "id": "L004",
+            "name": "Eagkone",
+            "type": "L",
+            "availability": true,
+            "description": "this is a snow location",
+            "x": -22,
+            "y": 2.4,
+            "z": 32.7
+        },
+        {
+            "id": "L005",
+            "name": "Mbbsbd",
+            "type": "L",
+            "availability": true,
+            "description": "this is a snow location",
+            "x": -26.7,
+            "y": 1.3,
+            "z": 34.7
+        },
+        {
+            "id": "L006",
+            "name": "Uabdnsn",
+            "type": "L",
+            "availability": true,
+            "description": "this is a snow location",
+            "x": -32,
+            "y": 3,
+            "z": 24.8
         },
         {
             "id": "S002",
@@ -34,57 +74,272 @@
     "routes": [
         {
             "id": "R001",
-            "name": "Yopels",
+            "name": "Turrachbahn",
             "type": "R",
-            "difficulty": 2,
+            "difficulty": 1,
             "availability": true,
-            "length": 1500,
+            "length": 2100,
             "slope": 15,
             "locs": [
                 {
-                    "id": "L007",
-                    "x": 3.9,
-                    "y": 2.7,
-                    "z": -2.8
+                    "x": -13,
+                    "y": 0.5,
+                    "z": 46.8
                 },
                 {
-                    "id": "L010",
-                    "x": 1,
-                    "y": 0.9,
-                    "z": -5.4
+                    "x": -8.7,
+                    "y": -0.9,
+                    "z": 46.7
                 },
                 {
-                    "id": "L012",
                     "x": -4,
-                    "y": -1,
-                    "z": -5
+                    "y": -2.3,
+                    "z": 48.2
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5
                 }
             ],
-            "description": "this is a route from L001 and L008"
+            "description": "Skipiste blau"
         },
         {
             "id": "R002",
             "name": "Mongles",
             "type": "R",
-            "difficulty": 0,
-            "availability": false,
-            "length": 500,
+            "difficulty": 2,
+            "availability": true,
+            "length": 2500,
             "slope": 25,
             "locs": [
                 {
-                    "id": "L012",
-                    "x": -4,
-                    "y": -1,
-                    "z": -5
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7
                 },
                 {
-                    "id": "S002",
-                    "x": -4.1,
-                    "y": -1.4,
-                    "z": -1.4
+                    "x": -20.9,
+                    "y": 1.7,
+                    "z": 34.8
+                },
+                {
+                    "x": -16.8,
+                    "y": 0.8,
+                    "z": 38.6
+                },
+                {
+                    "x": -14.9,
+                    "y": 0.3,
+                    "z": 39.6
+                },
+                {
+                    "x": -7.1,
+                    "y": -2,
+                    "z": 38.5
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5
                 }
             ],
-            "description": "this is a route from L001 and L008"
+            "description": "Skipiste rot"
+        },
+        {
+            "id": "R003",
+            "name": "Lopsdas",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 800,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7
+                },
+                {
+                    "x": -17.3,
+                    "y": 0,
+                    "z": 46.4
+                },
+                {
+                    "x": -13,
+                    "y": 0.5,
+                    "z": 46.8
+                }
+            ],
+            "description": "Skipiste rot"
+        },    
+        {
+            "id": "R004",
+            "name": "Momo",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 800,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7
+                },
+                {
+                    "x": -29.4,
+                    "y": 0,
+                    "z": 41.7
+                },
+                {
+                    "x": -29.5,
+                    "y": 0.6,
+                    "z": 38.5
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7
+                }
+            ],
+            "description": "Skipiste rot"
+        },
+        {
+            "id": "R005",
+            "name": "Koasn",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 800,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8
+                },
+                {
+                    "x": -30.5,
+                    "y": 2.5,
+                    "z": 27.5
+                },
+                {
+                    "x": -28.5,
+                    "y": 2.1,
+                    "z": 28.7
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7
+                }
+            ],
+            "description": "Skipiste rot"
+        },
+
+        {
+            "id": "K001",
+            "name": "Mohshabe",
+            "type": "R",
+            "difficulty": 0,
+            "availability": true,
+            "length": 650,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7
+                },
+                {
+                    "x": -16.2,
+                    "y": 0.3,
+                    "z": 47.8
+                },
+                {
+                    "x": -13,
+                    "y": 0.5,
+                    "z": 46.8
+                }
+            ],
+            "description": "6er-Sesselbahn"
+        },
+        {
+            "id": "K002",
+            "name": "Turrachbahn",
+            "type": "R",
+            "difficulty": 0,
+            "availability": true,
+            "length": 1200,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7
+                },
+                {
+                    "x": -18.5,
+                    "y": 1.9,
+                    "z": 35.1
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5
+                }
+            ],
+            "description": "6er-Sesselbahn"
+        },
+        {
+            "id": "K003",
+            "name": "Seitensprunglift",
+            "type": "R",
+            "difficulty": 0,
+            "availability": true,
+            "length": 300,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7
+                },
+                {
+                    "x": -24,
+                    "y": 2.3,
+                    "z": 33.5
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7
+                }
+            ],
+            "description": "Skilift"
+        },
+        {
+            "id": "K004",
+            "name": "Seitensprunglift",
+            "type": "R",
+            "difficulty": 0,
+            "availability": true,
+            "length": 1600,
+            "slope": 25,
+            "locs": [
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8
+                },
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7
+                }
+            ],
+            "description": "Skilift"
         }
     ]
 }
