@@ -73,7 +73,7 @@ export default function Map() {
       let element = document.documentElement;
       cameraRef.current = new THREE.PerspectiveCamera(75, element.clientWidth / element.clientHeight, 0.1, 2000);
       // cameraRef.current.position.set(6.7, 6.5, 47.5);
-      cameraRef.current.position.set(14.2, 14.7, 42);
+      cameraRef.current.position.set(11.8, 11.6, 45.3);
       sceneRef.current.add(cameraRef.current)
       //Load environment texture
       const hdrLoader = new RGBELoader()
@@ -91,15 +91,14 @@ export default function Map() {
       controlsRef.current.addEventListener('change', function () {
         cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
       });
-      // controlsRef.current.target.set(-6.6, 0, 39);
-      controlsRef.current.target.set(-5.4, 0, 32.6);
+      controlsRef.current.target.set(-8.9, 0, 29.9);
       controlsRef.current.update();
       // Initialize the mouse controller
       raycasterRef.current = new THREE.Raycaster();
       mouseRef.current = new THREE.Vector2();
       // Add renderer to container
       containerRef.current.appendChild(renderer.domElement);
-      creatLocation(-3.5, 3.3, 34.7);
+      // creatLocation(8.5, 2.3, 14.7);
     }
 
     // Initialize the extra objects in environment
@@ -439,7 +438,7 @@ export default function Map() {
         <p>Click on a location to set as start or end maunally.</p>
         <p>Or click the Search icon in the bottom right to set start and end from a list.</p>
       </Modal>
-      <button onClick={() => changeTest(1, 0, 0)}>x+</button>
+      {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
       <button onClick={() => changeTest(0, 1, 0)}>y+</button>
       <button onClick={() => changeTest(0, -1, 0)}>y-</button>
@@ -450,7 +449,7 @@ export default function Map() {
       <button onClick={() => changeTest(0, 0.1, 0)}>``y+</button>
       <button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
       <button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
-      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button>
+      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button> */}
     </div >
   );
 }
