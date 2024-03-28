@@ -13,8 +13,8 @@ import RouteItem from '../components/RouteItem';
 import './Map.css';
 
 import { difficultyOptions, options } from '../utils/test'
-import originData from "../utils/testData2_origin.json";
-import caculateData from "../utils/testData2_caculate.json";
+import originData from "../utils/iteration2_origin.json";
+import caculateData from "../utils/iteration2_caculate.json";
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
@@ -72,8 +72,8 @@ export default function Map() {
       // Add camera
       let element = document.documentElement;
       cameraRef.current = new THREE.PerspectiveCamera(75, element.clientWidth / element.clientHeight, 0.1, 2000);
-      cameraRef.current.position.set(6.7, 6.5, 47.5);
-      // cameraRef.current.position.set(-9.5, 9.3, 32.5);
+      // cameraRef.current.position.set(6.7, 6.5, 47.5);
+      cameraRef.current.position.set(14.2, 14.7, 42);
       sceneRef.current.add(cameraRef.current)
       //Load environment texture
       const hdrLoader = new RGBELoader()
@@ -91,15 +91,15 @@ export default function Map() {
       controlsRef.current.addEventListener('change', function () {
         cameraRef.current.position.y = cameraRef.current.position.y < 5 ? 5 : cameraRef.current.position.y;
       });
-      controlsRef.current.target.set(-6.6, 0, 39);
-      // controlsRef.current.target.set(-27.2, 0, 31.5);
+      // controlsRef.current.target.set(-6.6, 0, 39);
+      controlsRef.current.target.set(-5.4, 0, 32.6);
       controlsRef.current.update();
       // Initialize the mouse controller
       raycasterRef.current = new THREE.Raycaster();
       mouseRef.current = new THREE.Vector2();
       // Add renderer to container
       containerRef.current.appendChild(renderer.domElement);
-      creatLocation(-26.5, 3.3, 34.7);
+      creatLocation(-3.5, 3.3, 34.7);
     }
 
     // Initialize the extra objects in environment
@@ -108,7 +108,7 @@ export default function Map() {
       const dracoLoader = new DRACOLoader();
       dracoLoader.setDecoderPath("/draco/")
       loader.setDRACOLoader(dracoLoader)
-      loader.load("/glb/glbfile.glb", (gltf) => {
+      loader.load("/glb/snowMountain.glb", (gltf) => {
         const model = gltf.scene;
         model.scale.set(100, 100, 100);
         model.rotation.y = -Math.PI / 2; // Rotate 90 degrees
