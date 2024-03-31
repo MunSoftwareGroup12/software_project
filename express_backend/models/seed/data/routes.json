@@ -1,0 +1,844 @@
+[
+    {
+        "id": "R001",
+        "name": "Skiweg zur Turrachbahn",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 1200,
+        "slope": 15,
+        "locs": [
+            {
+                "x": -13,
+                "y": 0.5,
+                "z": 46.8
+            },
+            {
+                "x": -8.7,
+                "y": -0.9,
+                "z": 46.7
+            },
+            {
+                "x": -4,
+                "y": -2.3,
+                "z": 48.2
+            },
+            {
+                "x": -1.9,
+                "y": -2.5,
+                "z": 46.5
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R002",
+        "name": "Eisenhutabfahrt",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 2150,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -22,
+                "y": 2.4,
+                "z": 32.7
+            },
+            {
+                "x": -20.9,
+                "y": 1.7,
+                "z": 34.8
+            },
+            {
+                "x": -16.8,
+                "y": 0.8,
+                "z": 38.6
+            },
+            {
+                "x": -14.9,
+                "y": 0.3,
+                "z": 39.6
+            },
+            {
+                "x": -7.1,
+                "y": -2,
+                "z": 38.5
+            },
+            {
+                "x": -1.9,
+                "y": -2.5,
+                "z": 46.5
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R003",
+        "name": "Direttissima",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 600,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -21.7,
+                "y": -0.7,
+                "z": 49.7
+            },
+            {
+                "x": -17.3,
+                "y": 0,
+                "z": 46.4
+            },
+            {
+                "x": -13,
+                "y": 0.5,
+                "z": 46.8
+            }
+        ],
+        "description": "Skipiste rot"
+    },    
+    {
+        "id": "R004",
+        "name": "Seitesprung",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 1350,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -21.7,
+                "y": -0.7,
+                "z": 49.7
+            },
+            {
+                "x": -29.4,
+                "y": 0,
+                "z": 41.7
+            },
+            {
+                "x": -29.5,
+                "y": 0.6,
+                "z": 38.5
+            },
+            {
+                "x": -26.7,
+                "y": 1.3,
+                "z": 34.7
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R005",
+        "name": "Schwarzseeabfahrt",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 750,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -32,
+                "y": 3,
+                "z": 24.8
+            },
+            {
+                "x": -30.5,
+                "y": 2.5,
+                "z": 27.5
+            },
+            {
+                "x": -28.5,
+                "y": 2.1,
+                "z": 28.7
+            },
+            {
+                "x": -26.7,
+                "y": 1.3,
+                "z": 34.7
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R006",
+        "name": "Weitentalabfahrt",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 1400,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -42.3,
+                "y": 3.8,
+                "z": 29.6
+            },
+            {
+                "x": -40.8,
+                "y": 2.9,
+                "z": 32.1
+            },
+            {
+                "x": -36.5,
+                "y": 1.5,
+                "z": 35.5
+            },
+            {
+                "x": -30.5,
+                "y": 0.2,
+                "z": 42.7
+            },
+            {
+                "x": -21.7,
+                "y": -0.7,
+                "z": 49.7
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R007",
+        "name": "Ländereckabfahrt",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 600,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -42.3,
+                "y": 3.8,
+                "z": 29.6
+            },
+            {
+                "x": -38.6,
+                "y": 3.3,
+                "z": 26.5
+            },
+            {
+                "x": -34.6,
+                "y": 2.9,
+                "z": 26.4
+            },
+            {
+                "x": -32,
+                "y": 3,
+                "z": 24.8
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R008",
+        "name": "Abfahrt Sonnenbahn",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 830,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -32,
+                "y": 3,
+                "z": 24.8
+            },
+            {
+                "x": -28.7,
+                "y": 2.4,
+                "z": 24.9
+            },
+            {
+                "x": -27.5,
+                "y": 2.2,
+                "z": 23
+            },
+            {
+                "x": -24.2,
+                "y": 1.3,
+                "z": 21.5
+            },
+            {
+                "x": -19.5,
+                "y": 0.2,
+                "z": 15.4
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R009",
+        "name": "Skiweg zur Sonnenbahn",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 1250,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -22,
+                "y": 2.4,
+                "z": 32.7
+            },
+            {
+                "x": -23.5,
+                "y": 2.3,
+                "z": 28.7
+            },
+            {
+                "x": -21.7,
+                "y": 2.2,
+                "z": 28.6
+            },
+            {
+                "x": -20.4,
+                "y": 2.2,
+                "z": 23.6
+            },
+            {
+                "x": -19.6,
+                "y": 1.3,
+                "z": 21.1
+            },
+            {
+                "x": -19.5,
+                "y": 0.2,
+                "z": 15.4
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R010",
+        "name": "Alibi für Seitensprung",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 650,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -22,
+                "y": 2.4,
+                "z": 32.7
+            },
+            {
+                "x": -23.8,
+                "y": 2.2,
+                "z": 31.5
+            },
+            {
+                "x": -24.7,
+                "y": 2,
+                "z": 32.7
+            },
+            {
+                "x": -26.1,
+                "y": 1.6,
+                "z": 32.1
+            },
+            {
+                "x": -26.7,
+                "y": 1.3,
+                "z": 34.7
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R011",
+        "name": "Zirbenwaldabfahrt_01",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 1350,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -5.5,
+                "y": -2.2,
+                "z": 30.7
+            },
+            {
+                "x": -5.5,
+                "y": -2.3,
+                "z": 34.7
+            },
+            {
+                "x": -1.9,
+                "y": -2.5,
+                "z": 46.5
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R012",
+        "name": "Zirbenwaldabfahrt_02",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 600,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -5.5,
+                "y": -2.2,
+                "z": 30.7
+            },
+            {
+                "x": -3.5,
+                "y": -2.3,
+                "z": 34.7
+            },
+            {
+                "x": 3.5,
+                "y": -2.4,
+                "z": 33.7
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R013",
+        "name": "Zirbenwaldabfahrt_03",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 650,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -8.9,
+                "y": 0.1,
+                "z": 17.1
+            },
+            {
+                "x": -5.3,
+                "y": -1.3,
+                "z": 21.4
+            },
+            {
+                "x": -7.8,
+                "y": -1.6,
+                "z": 27.7
+            },
+            {
+                "x": -5.5,
+                "y": -2.2,
+                "z": 30.7
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+    {
+        "id": "R014",
+        "name": "Märchenwaldabfahrt_01",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 1300,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -8.9,
+                "y": 0.1,
+                "z": 17.1
+            },
+            {
+                "x": -6.7,
+                "y": -0.9,
+                "z": 18.8
+            },
+            {
+                "x": -2.5,
+                "y": -1.5,
+                "z": 23.2
+            },
+            {
+                "x": 3.5,
+                "y": -1.7,
+                "z": 24.2
+            },
+            {
+                "x": 3.5,
+                "y": -2.4,
+                "z": 33.7
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R015",
+        "name": "Wildkopfabfahrt",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 600,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -8.9,
+                "y": 0.1,
+                "z": 17.1
+            },
+            {
+                "x": -4,
+                "y": -0.7,
+                "z": 19.6
+            },
+            {
+                "x": 2.5,
+                "y": -0.7,
+                "z": 18
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R016",
+        "name": "Lampelabfahrt",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 450,
+        "slope": 25,
+        "locs": [
+            {
+                "x": 2.5,
+                "y": -0.7,
+                "z": 18
+            },
+            {
+                "x": -0.4,
+                "y": -0.3,
+                "z": 14.9
+            },
+            {
+                "x": -4.5,
+                "y": 0.5,
+                "z": 15.2
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R017",
+        "name": "Märchenwaldabfahrt_02",
+        "type": "R",
+        "difficulty": 1,
+        "availability": true,
+        "length": 1250,
+        "slope": 25,
+        "locs": [
+            {
+                "x": 8.5,
+                "y": 0.3,
+                "z": 14.7
+            },
+            {
+                "x": 7.2,
+                "y": -1.3,
+                "z": 22.3
+            },
+            {
+                "x": 3.5,
+                "y": -2.4,
+                "z": 33.7
+            }
+        ],
+        "description": "Skipiste blau"
+    },
+    {
+        "id": "R018",
+        "name": "Fis Abfahrt",
+        "type": "R",
+        "difficulty": 2,
+        "availability": true,
+        "length": 1200,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -22,
+                "y": 2.4,
+                "z": 32.7
+            },
+            {
+                "x": -17.2,
+                "y": 0.6,
+                "z": 31.7
+            },
+            {
+                "x": -15,
+                "y": 0.2,
+                "z": 32.7
+            },
+            {
+                "x": -5.5,
+                "y": -2.2,
+                "z": 30.7
+            }
+        ],
+        "description": "Skipiste rot"
+    },
+
+    {
+        "id": "K001",
+        "name": "Turrachbahn_01",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 550,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -21.7,
+                "y": -0.7,
+                "z": 49.7
+            },
+            {
+                "x": -16.2,
+                "y": 0.3,
+                "z": 47.8
+            },
+            {
+                "x": -13,
+                "y": 0.5,
+                "z": 46.8
+            }
+        ],
+        "description": "6er-Sesselbahn"
+    },
+    {
+        "id": "K002",
+        "name": "Turrachbahn_02",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 1900,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -22,
+                "y": 2.4,
+                "z": 32.7
+            },
+            {
+                "x": -18.5,
+                "y": 1.9,
+                "z": 35.1
+            },
+            {
+                "x": -1.9,
+                "y": -2.5,
+                "z": 46.5
+            }
+        ],
+        "description": "6er-Sesselbahn"
+    },
+    {
+        "id": "K003",
+        "name": "Seitensprunglift",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 300,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -22,
+                "y": 2.4,
+                "z": 32.7
+            },
+            {
+                "x": -24,
+                "y": 2.3,
+                "z": 33.5
+            },
+            {
+                "x": -26.7,
+                "y": 1.3,
+                "z": 34.7
+            }
+        ],
+        "description": "Skilift"
+    },
+    {
+        "id": "K004",
+        "name": "Weitentallift_02",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 650,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -32,
+                "y": 3,
+                "z": 24.8
+            },
+            {
+                "x": -31.2,
+                "y": 2.6,
+                "z": 27.4
+            },
+            {
+                "x": -26.7,
+                "y": 1.3,
+                "z": 34.7
+            }
+        ],
+        "description": "Skilift"
+    },
+    {
+        "id": "K005",
+        "name": "Weitentallift_01",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 1250,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -26.7,
+                "y": 1.3,
+                "z": 34.7
+            },
+            {
+                "x": -26.3,
+                "y": 1.3,
+                "z": 35.9
+            },
+            {
+                "x": -21.7,
+                "y": -0.7,
+                "z": 49.7
+            }
+        ],
+        "description": "Skilift"
+    },
+    {
+        "id": "K006",
+        "name": "Sonnenbahn_01",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 600,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -32,
+                "y": 3,
+                "z": 24.8
+            },
+            {
+                "x": -30.5,
+                "y": 3.1,
+                "z": 23.7
+            },
+            {
+                "x": -25.1,
+                "y": 2,
+                "z": 19.7
+            },
+            {
+                "x": -19.5,
+                "y": 0.2,
+                "z": 15.4
+            }
+        ],
+        "description": "2er-Sesselbahn"
+    },
+    {
+        "id": "K007",
+        "name": "Sonnenbahn_02",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 700,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -42.3,
+                "y": 3.8,
+                "z": 29.6
+            },
+            {
+                "x": -32,
+                "y": 3,
+                "z": 24.8
+            }
+        ],
+        "description": "2er-Sesselbahn"
+    },
+    {
+        "id": "K008",
+        "name": "Zirbenwaldbahn",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 1100,
+        "slope": 25,
+        "locs": [
+            {
+                "x": -8.9,
+                "y": 0.1,
+                "z": 17.1
+            },
+            {
+                "x": 3.5,
+                "y": -2.4,
+                "z": 33.7
+            }
+        ],
+        "description": "6er-Sesselbahn"
+    },
+    {
+        "id": "K009",
+        "name": "Wildkopflift",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 800,
+        "slope": 25,
+        "locs": [
+            {
+                "x": 2.5,
+                "y": -0.7,
+                "z": 18
+            },
+            {
+                "x": -4.5,
+                "y": 0.5,
+                "z": 15.2
+            }
+        ],
+        "description": "6er-Sesselbahn"
+    },
+    {
+        "id": "K010",
+        "name": "Maulwurf",
+        "type": "R",
+        "difficulty": 0,
+        "availability": true,
+        "length": 550,
+        "slope": 25,
+        "locs": [
+            {
+                "x": 2.5,
+                "y": -0.7,
+                "z": 18
+            },
+            {
+                "x": 8.5,
+                "y": 0.3,
+                "z": 14.7
+            }
+        ],
+        "description": "Skilift"
+    }
+]

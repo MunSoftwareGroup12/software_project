@@ -1,0 +1,152 @@
+[
+    {
+        "id": "L001",
+        "name": "Dabsj",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -21.7,
+        "y": -0.7,
+        "z": 49.7
+    },
+    {
+        "id": "L002",
+        "name": "Icicle",
+        "type": "L",
+        "availability": true,
+        "description": "This is the first ski location!",
+        "x": -13,
+        "y": 0.5,
+        "z": 46.8
+    },
+    {
+        "id": "L003",
+        "name": "Eaglepeak",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -1.9,
+        "y": -2.5,
+        "z": 46.5
+    },
+    {
+        "id": "L004",
+        "name": "Eagkone",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -22,
+        "y": 2.4,
+        "z": 32.7
+    },
+    {
+        "id": "L005",
+        "name": "Mbbsbd",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -26.7,
+        "y": 1.3,
+        "z": 34.7
+    },
+    {
+        "id": "L006",
+        "name": "Uabdnsn",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -32,
+        "y": 3,
+        "z": 24.8
+    },
+    {
+        "id": "L007",
+        "name": "Monilsi",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -42.3,
+        "y": 3.8,
+        "z": 29.6
+    },
+    {
+        "id": "L008",
+        "name": "Kasdn",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -19.5,
+        "y": 0.2,
+        "z": 15.4
+    },
+    {
+        "id": "L009",
+        "name": "Opdn",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -5.5,
+        "y": -2.2,
+        "z": 30.7
+    },
+    {
+        "id": "L010",
+        "name": "Opdn",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -8.9,
+        "y": 0.1,
+        "z": 17.1
+    },
+    {
+        "id": "L011",
+        "name": "Pdsssn",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": -4.5,
+        "y": 0.5,
+        "z": 15.2
+    },
+    {
+        "id": "L012",
+        "name": "Yussssn",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": 2.5,
+        "y": -0.7,
+        "z": 18
+    },
+    {
+        "id": "L013",
+        "name": "Rysd",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": 3.5,
+        "y": -2.4,
+        "z": 33.7
+    },
+    {
+        "id": "L014",
+        "name": "Fyysyd",
+        "type": "L",
+        "availability": true,
+        "description": "this is a snow location",
+        "x": 8.5,
+        "y": 0.3,
+        "z": 14.7
+    },
+    {
+        "id": "S002",
+        "name": "Asian sushi",
+        "type": "S",
+        "availability": true,
+        "description": "this is a Asian restaurant",
+        "x": -4.1,
+        "y": -1.4,
+        "z": -1.4
+    }
+]
