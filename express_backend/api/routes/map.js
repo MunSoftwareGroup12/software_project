@@ -8,7 +8,7 @@ router.get('/', async function (req, res, next) {
         locations: await Location.find({}),
         routes: await Route.find({})
     }
-    res.json(mapData);
+    res.json(map);
 });
 
 module.exports = router;
