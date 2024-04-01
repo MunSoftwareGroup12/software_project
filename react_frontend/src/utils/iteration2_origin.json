@@ -144,7 +144,7 @@
     "routes": [
         {
             "id": "R001",
-            "name": "Skiweg zur Turrachbahn",
+            "name": "Ski trail to Turrach Lift",
             "type": "R",
             "difficulty": 1,
             "availability": true,
@@ -174,11 +174,11 @@
                     "id": "L003"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R002",
-            "name": "Eisenhutabfahrt",
+            "name": "Iron Hat Descent",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -218,11 +218,11 @@
                     "id": "L003"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R003",
-            "name": "Direttissima",
+            "name": "Direct Descent",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -247,11 +247,11 @@
                     "id": "L002"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R004",
-            "name": "Seitesprung",
+            "name": "Side Jump",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -281,11 +281,11 @@
                     "id": "L005"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R005",
-            "name": "Schwarzseeabfahrt",
+            "name": "Black Lake Descent",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -315,11 +315,11 @@
                     "id": "L005"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R006",
-            "name": "Weitentalabfahrt",
+            "name": "Wide Valley Descent",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -354,11 +354,11 @@
                     "id": "L001"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R007",
-            "name": "L\u00e4ndereckabfahrt",
+            "name": "Border Corner Descent",
             "type": "R",
             "difficulty": 1,
             "availability": true,
@@ -388,11 +388,11 @@
                     "id": "L006"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R008",
-            "name": "Abfahrt Sonnenbahn",
+            "name": "Descent Sun Lift",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -427,11 +427,11 @@
                     "id": "L008"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R009",
-            "name": "Skiweg zur Sonnenbahn",
+            "name": "Ski trail to Sun Lift",
             "type": "R",
             "difficulty": 1,
             "availability": true,
@@ -471,7 +471,7 @@
                     "id": "L008"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R010",
@@ -510,7 +510,7 @@
                     "id": "L005"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R011",
@@ -539,7 +539,7 @@
                     "id": "L003"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R012",
@@ -568,7 +568,7 @@
                     "id": "L013"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R013",
@@ -602,7 +602,7 @@
                     "id": "L009"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "R014",
@@ -641,11 +641,11 @@
                     "id": "L013"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R015",
-            "name": "Wildkopfabfahrt",
+            "name": "Wild Head Descent",
             "type": "R",
             "difficulty": 1,
             "availability": true,
@@ -670,11 +670,11 @@
                     "id": "L012"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R016",
-            "name": "Lampelabfahrt",
+            "name": "Lamp Descent",
             "type": "R",
             "difficulty": 1,
             "availability": true,
@@ -699,11 +699,11 @@
                     "id": "L011"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R017",
-            "name": "M\u00e4rchenwaldabfahrt_02",
+            "name": "Märchenwaldabfahrt_02",
             "type": "R",
             "difficulty": 1,
             "availability": true,
@@ -728,11 +728,11 @@
                     "id": "L013"
                 }
             ],
-            "description": "Skipiste blau"
+            "description": "Blue ski slope"
         },
         {
             "id": "R018",
-            "name": "Fis Abfahrt",
+            "name": "Fis Descent",
             "type": "R",
             "difficulty": 2,
             "availability": true,
@@ -762,7 +762,7 @@
                     "id": "L009"
                 }
             ],
-            "description": "Skipiste rot"
+            "description": "Red ski slope"
         },
         {
             "id": "K001",
@@ -791,7 +791,7 @@
                     "id": "L002"
                 }
             ],
-            "description": "6er-Sesselbahn"
+            "description": "6-seater chairlift"
         },
         {
             "id": "K002",
@@ -820,7 +820,7 @@
                     "id": "L003"
                 }
             ],
-            "description": "6er-Sesselbahn"
+            "description": "6-seater chairlift"
         },
         {
             "id": "K003",
@@ -849,7 +849,7 @@
                     "id": "L005"
                 }
             ],
-            "description": "Skilift"
+            "description": "Ski lift"
         },
         {
             "id": "K004",
@@ -878,7 +878,7 @@
                     "id": "L005"
                 }
             ],
-            "description": "Skilift"
+            "description": "Ski lift"
         },
         {
             "id": "K005",
@@ -907,7 +907,7 @@
                     "id": "L001"
                 }
             ],
-            "description": "Skilift"
+            "description": "Ski lift"
         },
         {
             "id": "K006",
@@ -941,7 +941,7 @@
                     "id": "L008"
                 }
             ],
-            "description": "2er-Sesselbahn"
+            "description": "2-seater chairlift"
         },
         {
             "id": "K007",
@@ -965,11 +965,11 @@
                     "id": "L006"
                 }
             ],
-            "description": "2er-Sesselbahn"
+            "description": "2-seater chairlift"
         },
         {
             "id": "K008",
-            "name": "Zirbenwaldbahn",
+            "name": "Pine Forest Lift",
             "type": "K",
             "difficulty": 0,
             "availability": true,
@@ -989,11 +989,11 @@
                     "id": "L013"
                 }
             ],
-            "description": "6er-Sesselbahn"
+            "description": "6-seater chairlift"
         },
         {
             "id": "K009",
-            "name": "Wildkopflift",
+            "name": "Wild Head Lift",
             "type": "K",
             "difficulty": 0,
             "availability": true,
@@ -1013,11 +1013,11 @@
                     "id": "L011"
                 }
             ],
-            "description": "6er-Sesselbahn"
+            "description": "2 seater chairlift"
         },
         {
             "id": "K010",
-            "name": "Maulwurf",
+            "name": "Mole",
             "type": "K",
             "difficulty": 0,
             "availability": true,
@@ -1037,7 +1037,7 @@
                     "id": "L014"
                 }
             ],
-            "description": "Skilift"
+            "description": "Ski lift"
         }
     ]
 }
