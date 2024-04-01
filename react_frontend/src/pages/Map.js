@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
 import { fetchData } from '../api/request'
-import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, QuestionOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import './Map.css';
@@ -31,7 +31,7 @@ export default function Map() {
   const [loadings, setLoadings] = useState([true, false]);
   const [pannelOpen, setPannelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isTipsOpen, setIsTipsOpen] = useState(false);
+  const [isTipsOpen, setIsTipsOpen] = useState(true);
   const [selectRoute, setSelectRoute] = useState(1);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -52,8 +52,8 @@ export default function Map() {
     // Search for the routes
     const getDataInfo = async (index) => {
       try {
-        //const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
-        const data = originData;
+        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
+        //const data = originData;
         creatLocationArray(data);
         setLoadings(getLoading(0, false));
         // setIsTipsOpen(true);
@@ -366,6 +366,7 @@ export default function Map() {
       {/* Float action button group */}
       <FloatButton.Group shape="circle" style={{ right: 24, bottom: 50 }}>
         <FloatButton type="primary" icon={<SearchOutlined />} onClick={() => { closeCard(); setPannelOpen(true); }} />
+        <FloatButton icon={<QuestionOutlined />} onClick={() => { setIsTipsOpen(true) }} />
         {additionalShow && <FloatButton onClick={() => { closeCard(); setIsModalOpen(true); }} />}
         {additionalShow && <FloatButton icon={<CloseOutlined />} onClick={resetShow} />}
       </FloatButton.Group>
@@ -432,11 +433,16 @@ export default function Map() {
           })}
         />
       </Modal>
-      <Modal title="How to caculate a route?" okText="Got it!" cancelButtonProps={{ style: { display: 'none' } }}
+      <Modal title="Tips" okText="Got it!" cancelButtonProps={{ style: { display: 'none' } }}
         closeIcon={false} open={isTipsOpen} onOk={() => { setIsTipsOpen(false) }}
       >
-        <p>Click on a location to set as start or end maunally.</p>
-        <p>Or click the Search icon in the bottom right to set start and end from a list.</p>
+        <b>How to caculate a route?</b>
+        <p>-Click on a location to set as start or end maunally.</p>
+        <p>-Or click the Search icon in the bottom right to set start and end from a list.</p>
+        <b>After search routes, you can...</b>
+        <p>-Choose a route you want to display on the map.</p>
+        <p>-Click the switch icon to redisplay the list of routes.</p>
+        <p>-Click the clear icon to restore the original map display.</p>
       </Modal>
       {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
       <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
