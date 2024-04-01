@@ -3,10 +3,12 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+
 const indexRouter = require('./routes/index');
 const calculatedRoutesRouter = require('./routes/calculated-routes');
 const mapRouter = require('./routes/map');
 const cors = require('cors');
+const connectDb = require('../lib/connectDb')
 
 var app = express();
 
@@ -16,6 +18,9 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());    
 app.use(express.static(path.join(__dirname, 'public')));
+app.use((req, res, next) => {
+    connectDb().then(() => next())
+});
 
 app.use('/', indexRouter);
 app.use('/calculated-routes', calculatedRoutesRouter);

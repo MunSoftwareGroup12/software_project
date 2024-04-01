@@ -13,6 +13,7 @@ if (!cached) {
 }
 
 async function connectDB() {
+  console.log("connecting db");
   if (cached.conn) {
     return cached.conn;
   }
