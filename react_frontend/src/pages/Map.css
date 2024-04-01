@@ -22,11 +22,12 @@
     position: relative;
 }
 
-.moveControler {
+#moveControler {
+    display: none;
     transform: translateY(-120px);
 }
 
-.moveControler>div {
+#moveControler>div {
     gap: 40px;
 }
 

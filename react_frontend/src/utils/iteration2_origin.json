@@ -32,10 +32,10 @@
         },
         {
             "id": "L004",
-            "name": "Eagkone",
+            "name": "Toilet_01",
             "type": "L",
             "availability": true,
-            "description": "this is a snow location",
+            "description": "this is a toilet",
             "x": -22,
             "y": 2.4,
             "z": 32.7
@@ -112,20 +112,20 @@
         },
         {
             "id": "L012",
-            "name": "Yussssn",
+            "name": "Toilet_02",
             "type": "L",
             "availability": true,
-            "description": "this is a snow location",
+            "description": "this is a toilet",
             "x": 2.5,
             "y": -0.7,
             "z": 18
         },
         {
             "id": "L013",
-            "name": "Rysd",
+            "name": "Asian sushi",
             "type": "L",
             "availability": true,
-            "description": "this is a snow location",
+            "description": "Dive into a world of exquisite sushi, where fresh flavors and Asian tradition blend in perfect harmony.",
             "x": 3.5,
             "y": -2.4,
             "z": 33.7
@@ -139,16 +139,6 @@
             "x": 8.5,
             "y": 0.3,
             "z": 14.7
-        },
-        {
-            "id": "S002",
-            "name": "Asian sushi",
-            "type": "S",
-            "availability": true,
-            "description": "this is a Asian restaurant",
-            "x": -4.1,
-            "y": -1.4,
-            "z": -1.4
         }
     ],
     "routes": [
@@ -777,7 +767,7 @@
         {
             "id": "K001",
             "name": "Turrachbahn_01",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 550,
@@ -806,7 +796,7 @@
         {
             "id": "K002",
             "name": "Turrachbahn_02",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 1900,
@@ -835,7 +825,7 @@
         {
             "id": "K003",
             "name": "Seitensprunglift",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 300,
@@ -864,7 +854,7 @@
         {
             "id": "K004",
             "name": "Weitentallift_02",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 650,
@@ -893,7 +883,7 @@
         {
             "id": "K005",
             "name": "Weitentallift_01",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 1250,
@@ -922,7 +912,7 @@
         {
             "id": "K006",
             "name": "Sonnenbahn_01",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 600,
@@ -956,7 +946,7 @@
         {
             "id": "K007",
             "name": "Sonnenbahn_02",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 700,
@@ -980,7 +970,7 @@
         {
             "id": "K008",
             "name": "Zirbenwaldbahn",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 1100,
@@ -1004,7 +994,7 @@
         {
             "id": "K009",
             "name": "Wildkopflift",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 800,
@@ -1028,7 +1018,7 @@
         {
             "id": "K010",
             "name": "Maulwurf",
-            "type": "R",
+            "type": "K",
             "difficulty": 0,
             "availability": true,
             "length": 550,

@@ -1,0 +1,32 @@
+// The code here is used to create movable balls in the map for manual positioning
+// Move to map.js if needed
+
+// creatLocation(8.5, 2.3, 14.7);
+
+      
+// create and move
+const creatLocation = useCallback((x, y, z) => {
+  // Add a sphere geometry
+  var geometry = new THREE.SphereGeometry(0.4, 32, 32);
+  var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
+  sphereTest.current = new THREE.Mesh(geometry, material);
+  sphereTest.current.position.set(x, y, z)
+  sceneRef.current.add(sphereTest.current);
+}, [])
+const changeTest = (x, y, z) => {
+  sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
+  console.log(sphereTest.current.position)
+}
+  
+<button onClick={() => changeTest(1, 0, 0)}>x+</button>
+<button onClick={() => changeTest(-1, 0, 0)}>x-</button>
+<button onClick={() => changeTest(0, 1, 0)}>y+</button>
+<button onClick={() => changeTest(0, -1, 0)}>y-</button>
+<button onClick={() => changeTest(0, 0, 1)}>z+</button>
+<button onClick={() => changeTest(0, 0, -1)}>z-</button>
+<button onClick={() => changeTest(0.1, 0, 0)}>``x+</button>
+<button onClick={() => changeTest(-0.1, 0, 0)}>``x-</button>
+<button onClick={() => changeTest(0, 0.1, 0)}>``y+</button>
+<button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
+<button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
+<button onClick={() => changeTest(0, 0, -0.1)}>``z-</button>

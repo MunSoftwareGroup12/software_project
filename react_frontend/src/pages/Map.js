@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
 import { fetchData } from '../api/request'
-import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, QuestionOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, QuestionOutlined, ProfileOutlined, DragOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import './Map.css';
@@ -52,8 +52,8 @@ export default function Map() {
     // Search for the routes
     const getDataInfo = async (index) => {
       try {
-        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
-        //const data = originData;
+        // const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
+        const data = originData;
         creatLocationArray(data);
         setLoadings(getLoading(0, false));
         // setIsTipsOpen(true);
@@ -98,7 +98,6 @@ export default function Map() {
       mouseRef.current = new THREE.Vector2();
       // Add renderer to container
       containerRef.current.appendChild(renderer.domElement);
-      // creatLocation(8.5, 2.3, 14.7);
     }
 
     // Initialize the extra objects in environment
@@ -138,7 +137,6 @@ export default function Map() {
         let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
         if (intersects.length > 0 && intersects[0].object.userData.id) {
           // Raycasting
-          console.log(intersects[0].object)
           let selectedObject = intersects[0].object;
           if (selectedObjRef.current) {
             sceneRef.current.remove(selectedObjRef.current);
@@ -152,7 +150,7 @@ export default function Map() {
           let cardX = event.clientX;
           let cardY = event.clientY - info.offsetHeight;
           info.style.display = 'block';
-          info.style.left = ((cardX > document.documentElement.clientWidth * 0.7) ? cardX - info.offsetWidth : cardX) + 'px';
+          info.style.left = ((cardX > document.documentElement.clientWidth * 0.6) ? cardX - info.offsetWidth : cardX) + 'px';
           info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           setCard(intersects[0].object.userData);
         }
@@ -186,20 +184,6 @@ export default function Map() {
     };
   }, []);
 
-  // Only for test
-  const creatLocation = useCallback((x, y, z) => {
-    // Add a sphere geometry
-    var geometry = new THREE.SphereGeometry(0.4, 32, 32);
-    var material = new THREE.MeshBasicMaterial({ color: 0x0000ff });
-    sphereTest.current = new THREE.Mesh(geometry, material);
-    sphereTest.current.position.set(x, y, z)
-    sceneRef.current.add(sphereTest.current);
-  }, [])
-  const changeTest = (x, y, z) => {
-    sphereTest.current.position.set(sphereTest.current.position.x + x, sphereTest.current.position.y + y, sphereTest.current.position.z + z);
-    console.log(sphereTest.current.position)
-  }
-
   // Create mesh by location
   const creatLocationArray = useCallback((Arr, baisc = true) => {
     // Create locations
@@ -226,7 +210,8 @@ export default function Map() {
     for (let i = 0; i < route.length; i++) {
       const points = route[i].locs.map(loc => new THREE.Vector3(loc.x, loc.y, loc.z))
       const path = new THREE.CatmullRomCurve3(points);
-      const tubeGeometry = new THREE.TubeGeometry(path, route[i].locs.length * 15, 0.1, 3, false);
+      let radius = (route[i].type == "R" ? 0.15 : 0.25);
+      const tubeGeometry = new THREE.TubeGeometry(path, route[i].locs.length * 15, radius, 3, false);
       const tube = new THREE.Mesh(tubeGeometry, material_arr[route[i].difficulty]);
       tube.userData = route[i];
       tube.userData.displayName = route[i].id + " " + route[i].name;
@@ -271,12 +256,15 @@ export default function Map() {
     newTarget.copy(controlsRef.current.target);
     newTarget.add(dir);
     controlsRef.current.target.copy(newTarget);
-    console.log("-----------------------")
-    console.log(newPosition)
-    console.log(newTarget)
 
   }, []);
   const throttledMove = useCallback(throttle(moveCameraAndTarget, 300), [moveCameraAndTarget]);
+
+  // Switch the move control
+  const switchMoveControl = () => {
+    let element = document.getElementById('moveControler');
+    element.style.display = (element.style.display == 'none' ? 'flex' : 'none');
+  }
 
   // Hide the card
   const closeCard = () => {
@@ -286,7 +274,6 @@ export default function Map() {
 
   // Cascader onchange
   const inputOptionsChange = (value, index) => {
-    console.log(value, index);
     switch (index) {
       case 0: setStartLocation(value); break;
       case 1: setEndLocation(value); break;
@@ -355,7 +342,7 @@ export default function Map() {
       <div className="container" ref={containerRef}></div>
       {contextHolder}
       {/* Map movecontroller */}
-      <Flex className='moveControler' vertical={true} align="center" >
+      <Flex id='moveControler' vertical={true} align="center" >
         <CaretUpOutlined id="dirKey_up" style={{ fontSize: '40px' }} onClick={() => { throttledMove('F') }} />
         <Flex>
           <CaretLeftOutlined id="dirKey_left" style={{ fontSize: '40px' }} onClick={() => { throttledMove('L') }} />
@@ -366,8 +353,9 @@ export default function Map() {
       {/* Float action button group */}
       <FloatButton.Group shape="circle" style={{ right: 24, bottom: 50 }}>
         <FloatButton type="primary" icon={<SearchOutlined />} onClick={() => { closeCard(); setPannelOpen(true); }} />
+        <FloatButton icon={<DragOutlined />} onClick={() => { switchMoveControl() }} />
         <FloatButton icon={<QuestionOutlined />} onClick={() => { setIsTipsOpen(true) }} />
-        {additionalShow && <FloatButton onClick={() => { closeCard(); setIsModalOpen(true); }} />}
+        {additionalShow && <FloatButton icon={<ProfileOutlined />} onClick={() => { closeCard(); setIsModalOpen(true); }} />}
         {additionalShow && <FloatButton icon={<CloseOutlined />} onClick={resetShow} />}
       </FloatButton.Group>
       {/* Location information card */}
@@ -375,7 +363,7 @@ export default function Map() {
         id="selectedInfo"
         title={<div>{card.displayName + ' '}{card.availability ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="#eb2f96" />}</div>}
         extra={<CloseOutlined onClick={() => { closeCard() }} />}
-        actions={card.type === "R" ? [] :
+        actions={card.type != "L" ? [] :
           [
             < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
             < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
@@ -438,24 +426,16 @@ export default function Map() {
       >
         <b>How to caculate a route?</b>
         <p>-Click on a location to set as start or end maunally.</p>
-        <p>-Or click the Search icon in the bottom right to set start and end from a list.</p>
-        <b>After search routes, you can...</b>
+        <p>-Or click <SearchOutlined /> button in the bottom right to set start and end from a list.</p>
+        <b>After caculation finished, you can...</b>
         <p>-Choose a route you want to display on the map.</p>
-        <p>-Click the switch icon to redisplay the list of routes.</p>
-        <p>-Click the clear icon to restore the original map display.</p>
+        <p>-Click <ProfileOutlined /> button to redisplay the list of routes.</p>
+        <p>-Click <CloseOutlined /> button to restore the original map display.</p>
+        <b>Basic operations</b>
+        <p>-Click on a location or a route to check the detail.</p>
+        <p>-Click <DragOutlined /> button to open the map movement controller (not required for mobile).</p>
+        <p>-Click <QuestionOutlined /> button to reopen the tips instructions.</p>
       </Modal>
-      {/* <button onClick={() => changeTest(1, 0, 0)}>x+</button>
-      <button onClick={() => changeTest(-1, 0, 0)}>x-</button>
-      <button onClick={() => changeTest(0, 1, 0)}>y+</button>
-      <button onClick={() => changeTest(0, -1, 0)}>y-</button>
-      <button onClick={() => changeTest(0, 0, 1)}>z+</button>
-      <button onClick={() => changeTest(0, 0, -1)}>z-</button>
-      <button onClick={() => changeTest(0.1, 0, 0)}>``x+</button>
-      <button onClick={() => changeTest(-0.1, 0, 0)}>``x-</button>
-      <button onClick={() => changeTest(0, 0.1, 0)}>``y+</button>
-      <button onClick={() => changeTest(0, -0.1, 0)}>``y-</button>
-      <button onClick={() => changeTest(0, 0, 0.1)}>``z+</button>
-      <button onClick={() => changeTest(0, 0, -0.1)}>``z-</button> */}
     </div >
   );
 }
