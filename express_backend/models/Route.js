@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const pointSchema = new mongoose.Schema({
+    id: {
+        type: String,
+        required: false,
+    },
     x: {
         type: Number,
         required: true
