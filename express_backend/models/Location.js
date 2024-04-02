@@ -12,6 +12,11 @@ const locationSchema = new mongoose.Schema({
         required: true,
         trim: true
     },
+    group: {
+        type: String,
+        required: true,
+        trim: true
+    },
     type: {
         type: String,
         required: true,

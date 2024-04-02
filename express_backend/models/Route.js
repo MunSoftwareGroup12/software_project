@@ -1,6 +1,10 @@
 const mongoose = require('mongoose');
 
 const pointSchema = new mongoose.Schema({
+    id: {
+        type: String,
+        required: false,
+    },
     x: {
         type: Number,
         required: true
@@ -48,7 +52,7 @@ const routeSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    points: [pointSchema],
+    locs: [pointSchema],
     description: {
         type: String,
         required: true,
