@@ -19,18 +19,19 @@ export default function RouteItem(props) {
     },
     {
       key: '4',
-      label: 'Number of path nodes',
-      children: props.routeData.locations.length,
+      label: 'Number of waypoints',
+      children: props.routeData.locations.length - 2,
     },
     {
       key: '5',
-      label: 'Number of route segements',
-      children: props.routeData.routes.length,
+      label: 'Number of routes without difficulty',
+      children: (function countDifficultyZero(routes) {
+        return routes.filter(route => route.difficulty === 0).length;
+      }(props.routeData.routes)),
     },
   ];
   return (
     <Descriptions title={props.routeData.tag + " route"}
       column={1} items={items} />
-
   );
 }

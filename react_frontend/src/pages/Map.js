@@ -146,15 +146,16 @@ export default function Map() {
           selectedObjRef.current = new THREE.Mesh(selectedObject.geometry, material);
           selectedObjRef.current.position.copy(selectedObject.position);
           sceneRef.current.add(selectedObjRef.current);
-          // Set the UI of selected object
+          // Set the UI of selected object, use setTimeout to make sure the dom has updated
           let info = document.getElementById('selectedInfo');
-          info.style.display = 'block';
-          let cardX = event.clientX;
-          let cardY = event.clientY - info.offsetHeight;
-          // console.log(event.clientY, info.offsetHeight, cardY)
-          info.style.left = ((cardX > document.documentElement.clientWidth * 0.6) ? cardX - info.offsetWidth : cardX) + 'px';
-          info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           setCard(intersects[0].object.userData);
+          setTimeout(() => {
+            info.style.display = 'block';
+            let cardX = event.clientX;
+            let cardY = event.clientY - info.offsetHeight;
+            info.style.left = ((cardX > document.documentElement.clientWidth * 0.6) ? cardX - info.offsetWidth : cardX) + 'px';
+            info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
+          }, 0);
         }
       }
     }
@@ -450,7 +451,7 @@ export default function Map() {
         <p>-Choose a route you want to display on the map.</p>
         <p>-Click <ProfileOutlined /> button to redisplay the list of routes.</p>
         <p>-Click <CloseOutlined /> button to restore the original map display.</p>
-        <b>Basic operations</b>
+        <b>Basic operations:</b>
         <p>-Click on a location or a route to check the detail.</p>
         <p>-Click <DragOutlined /> button to open the map movement controller (not required for mobile).</p>
         <p>-Click <QuestionOutlined /> button to reopen the tips instructions.</p>

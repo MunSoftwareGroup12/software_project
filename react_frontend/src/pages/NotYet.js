@@ -3,6 +3,7 @@ import React from 'react';
 export default function NotYet() {
   return (
     <div>
+      <h1>...</h1>
       <h1>Oops! This page is still on the to-do list!
       </h1>
       <p>(Might be there for a while!)
