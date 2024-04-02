@@ -65,6 +65,7 @@ export default function Map() {
         });
       }
     };
+
     // Initialize the environment
     const InitializeEnv = () => {
       // Initialize the scene
@@ -147,9 +148,10 @@ export default function Map() {
           sceneRef.current.add(selectedObjRef.current);
           // Set the UI of selected object
           let info = document.getElementById('selectedInfo');
+          info.style.display = 'block';
           let cardX = event.clientX;
           let cardY = event.clientY - info.offsetHeight;
-          info.style.display = 'block';
+          // console.log(event.clientY, info.offsetHeight, cardY)
           info.style.left = ((cardX > document.documentElement.clientWidth * 0.6) ? cardX - info.offsetWidth : cardX) + 'px';
           info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           setCard(intersects[0].object.userData);
@@ -274,12 +276,21 @@ export default function Map() {
 
   // Cascader onchange
   const inputOptionsChange = (value, index) => {
+    console.log(value)
     switch (index) {
       case 0: setStartLocation(value); break;
       case 1: setEndLocation(value); break;
       case 2: setDifficulty(value); break;
       default: break;
     }
+  };
+
+  // Select a location as start or end location
+  const selectLoction = (card, isStart) => {
+    let option = [card.group.split("/")[0], card.group.split("/")[1], card.id];
+    isStart ? setStartLocation(option) : setEndLocation(option);
+    closeCard();
+    setPannelOpen(true);
   };
 
   // Get loading status
@@ -291,9 +302,16 @@ export default function Map() {
 
   // Search for the routes
   const searchRoutes = async (index) => {
-    console.log("searchRoutes");
+    if (startLocation == null || endLocation == null || difficulty == null) {
+      messageApi.open({
+        type: 'warning',
+        content: "Please complete your input before searching",
+      });
+      return;
+    }
     setLoadings(getLoading(index, true))
     try {
+      console.log(startLocation[2], endLocation[2])
       //const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculated-routes");
       const data = caculateData;
       setCaculateRoutes(data.testAddArr);
@@ -365,10 +383,11 @@ export default function Map() {
         extra={<CloseOutlined onClick={() => { closeCard() }} />}
         actions={card.type != "L" ? [] :
           [
-            < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { closeCard(); setStartLocation(['facility', 'restaurant', 'S002']); setPannelOpen(true); }} /></Tooltip>,
-            < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { closeCard(); setEndLocation(['skiPoint', 'level1', 'L001']); setPannelOpen(true); }} /></Tooltip>,
+            < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { selectLoction(card, true) }} /></Tooltip>,
+            < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { selectLoction(card, false) }} /></Tooltip>,
           ]}
       >
+        {!card.length && <p><b>Group: </b>{card.group}</p>}
         {card.length && <p><b>Length: </b>{card.length + "m "}<b>Slope: </b>{card.slope + "°"}</p>}
         <p>{card.description}</p>
       </Card>

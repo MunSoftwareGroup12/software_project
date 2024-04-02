@@ -18,29 +18,62 @@ export const options = [
         label: 'SkiPoint',
         children: [
             {
-                value: 'level1',
-                label: 'Level 1',
+                value: 'area1',
+                label: 'Area 1',
                 children: [
                     {
                         value: 'L001',
-                        label: 'SnowPeak',
+                        label: 'Frostwood',
                     },
                     {
                         value: 'L002',
-                        label: 'FrostHaven',
+                        label: 'Mistaken Point',
+                    },
+                    {
+                        value: 'L003',
+                        label: 'Crystal',
+                    },
+                    {
+                        value: 'L005',
+                        label: 'Winterwood',
                     },
                 ],
             }, {
-                value: 'level2',
-                label: 'Level 2',
+                value: 'area2',
+                label: 'Area 2',
                 children: [
                     {
-                        value: 'L003',
-                        label: 'IceCrest',
+                        value: 'L006',
+                        label: 'Snowdrift',
                     },
                     {
-                        value: 'L004',
-                        label: 'Glacier',
+                        value: 'L007',
+                        label: 'Chillwind',
+                    },
+                    {
+                        value: 'L008',
+                        label: 'Icicle',
+                    },
+                ],
+            }, {
+                value: 'area3',
+                label: 'Area 3',
+                children: [
+                    {
+                        value: 'L009',
+                        label: 'Alpine Ridg',
+                    },
+                    {
+                        value: 'L010',
+                        label: 'Aurora',
+                    },
+                    {
+                        value: 'L011',
+                        label: 'Haven',
+                    },
+                    {
+                        value: 'L014',
+                        label: 'Windwild',
                     },
                 ],
             }
@@ -55,11 +88,11 @@ export const options = [
                 label: 'Toilet',
                 children: [
                     {
-                        value: 'S001',
+                        value: 'L004',
                         label: 'Toilet-01',
                     },
                     {
-                        value: 'S003',
+                        value: 'L012',
                         label: 'Toilet-02',
                     }
                 ],
@@ -69,7 +102,7 @@ export const options = [
                 label: 'Restaurant',
                 children: [
                     {
-                        value: 'S002',
+                        value: 'L013',
                         label: 'Asian sushi',
                     },
                 ],
