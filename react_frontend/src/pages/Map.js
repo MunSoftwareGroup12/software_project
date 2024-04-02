@@ -31,7 +31,7 @@ export default function Map() {
   const [loadings, setLoadings] = useState([true, false]);
   const [pannelOpen, setPannelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isTipsOpen, setIsTipsOpen] = useState(true);
+  const [isTipsOpen, setIsTipsOpen] = useState(false);
   const [selectRoute, setSelectRoute] = useState(1);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
@@ -44,19 +44,17 @@ export default function Map() {
   const additionalShowRef = useRef([]); //an array to save additional map search objs
   const [messageApi, contextHolder] = message.useMessage();
 
-  const sphereTest = useRef(null);
-
   useEffect(() => {
     let animationFrameId;
 
     // Search for the routes
     const getDataInfo = async (index) => {
       try {
-        // const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
-        const data = originData;
+        const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/map");
+        //const data = originData;
         creatLocationArray(data);
         setLoadings(getLoading(0, false));
-        // setIsTipsOpen(true);
+        setIsTipsOpen(true);
       } catch (error) {
         setLoadings(getLoading(0, false));
         messageApi.open({
@@ -312,9 +310,8 @@ export default function Map() {
     }
     setLoadings(getLoading(index, true))
     try {
-      console.log(startLocation[2], endLocation[2])
-      //const data = await fetchData("https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculated-routes");
-      const data = caculateData;
+      const data = await fetchData(`https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculateRoute?startLocationId=${startLocation[2]}&endLocationId=${endLocation[2]}`);
+      //const data = caculateData;
       setCaculateRoutes(data.testAddArr);
       setLoadings(getLoading(index, false));
       setPannelOpen(false);
@@ -444,17 +441,17 @@ export default function Map() {
       <Modal title="Tips" okText="Got it!" cancelButtonProps={{ style: { display: 'none' } }}
         closeIcon={false} open={isTipsOpen} onOk={() => { setIsTipsOpen(false) }}
       >
-        <b>How to caculate a route?</b>
-        <p>-Click on a location to set as start or end maunally.</p>
-        <p>-Or click <SearchOutlined /> button in the bottom right to set start and end from a list.</p>
-        <b>After caculation finished, you can...</b>
-        <p>-Choose a route you want to display on the map.</p>
-        <p>-Click <ProfileOutlined /> button to redisplay the list of routes.</p>
-        <p>-Click <CloseOutlined /> button to restore the original map display.</p>
         <b>Basic operations:</b>
         <p>-Click on a location or a route to check the detail.</p>
-        <p>-Click <DragOutlined /> button to open the map movement controller (not required for mobile).</p>
+        <p>-Click <DragOutlined /> button to open the move controller (not neccessary for mobile).</p>
         <p>-Click <QuestionOutlined /> button to reopen the tips instructions.</p>
+        <b>How to caculate a route?</b>
+        <p>-Click on a location to open detail pannel, click <HomeFilled /> button to set as start or click <FlagFilled /> button to set as end.</p>
+        <p>-Your can also click <SearchOutlined /> button to set start and end from drop-down box.</p>
+        <b>After caculation finished, you can...</b>
+        <p>-Choose a route you want to display on the map.</p>
+        <p>-Click <ProfileOutlined /> button to redisplay the list of caculated routes.</p>
+        <p>-Click <CloseOutlined /> button to restore the original map display.</p>
       </Modal>
     </div >
   );

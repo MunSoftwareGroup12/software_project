@@ -1,8 +1,8 @@
 // The code here is used to create movable balls in the map for manual positioning
 // Move to map.js if needed
 
+// const sphereTest = useRef(null);
 // creatLocation(8.5, 2.3, 14.7);
-
       
 // create and move
 const creatLocation = useCallback((x, y, z) => {
