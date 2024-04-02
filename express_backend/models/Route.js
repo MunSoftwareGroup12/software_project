@@ -52,7 +52,7 @@ const routeSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    points: [pointSchema],
+    locs: [pointSchema],
     description: {
         type: String,
         required: true,
