@@ -1,7 +1,7 @@
 import React from 'react';
 import './app.css';
 import { HomeOutlined, BranchesOutlined, AccountBookOutlined, UserOutlined } from '@ant-design/icons';
-import { Layout, Menu, theme } from 'antd';
+import { Layout, Menu } from 'antd';
 import { Outlet } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import { QueryClient, QueryClientProvider } from 'react-query';
@@ -48,7 +48,8 @@ export default function App() {
                 >
                     <Menu
                         className="app_menu"
-                        theme="dark" mode="inline"
+                        theme="dark"
+                        mode="inline"
                         defaultSelectedKeys={['1']}
                         items={items}
                     />

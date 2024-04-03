@@ -8,11 +8,6 @@ export default function RouteItem(props) {
       children: props.routeData.details.estimateTime,
     },
     {
-      key: '2',
-      label: 'Route Condition',
-      children: props.routeData.details.condition,
-    },
-    {
       key: '3',
       label: 'Total Length',
       children: props.routeData.details.length,

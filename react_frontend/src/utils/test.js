@@ -1,14 +1,14 @@
 export const difficultyOptions = [
     {
-        label: "easy",
+        label: "blue",
         value: 1
     },
     {
-        label: "normal",
+        label: "red",
         value: 2
     },
     {
-        label: "hard",
+        label: "black",
         value: 3
     }
 ]

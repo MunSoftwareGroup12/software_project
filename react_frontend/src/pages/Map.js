@@ -151,6 +151,14 @@ export default function Map() {
             info.style.display = 'block';
             let cardX = event.clientX;
             let cardY = event.clientY - info.offsetHeight;
+            let cardHead = info.getElementsByClassName('ant-card-head')[0];
+            let difficulty = intersects[0].object.userData.difficulty
+            if (!isNaN(difficulty)) {
+              let routeColor = ["rgba(0, 138, 0, 0.2)", "rgba(0, 0, 138, 0.2)", "rgba(138, 0, 0, 0.2)", "rgba(0, 0, 0, 0.2)"];
+              cardHead.style.background = routeColor[difficulty];
+            } else {
+              cardHead.style.background = "rgba(2, 135, 252, 0.22)"
+            }
             info.style.left = ((cardX > document.documentElement.clientWidth * 0.6) ? cardX - info.offsetWidth : cardX) + 'px';
             info.style.top = ((cardY > 100) ? cardY : cardY + info.offsetHeight) + 'px';
           }, 0);
@@ -202,7 +210,6 @@ export default function Map() {
     // Create routes
     let route = Arr.routes;
     let material_arr = [
-      // new THREE.MeshBasicMaterial({ color: 0x5f5f5f }), //grey
       new THREE.MeshBasicMaterial({ color: 0x008a00 }), //green
       new THREE.MeshBasicMaterial({ color: 0x00008a }), //blue
       new THREE.MeshBasicMaterial({ color: 0x8a0000 }), //red
@@ -211,7 +218,7 @@ export default function Map() {
     for (let i = 0; i < route.length; i++) {
       const points = route[i].locs.map(loc => new THREE.Vector3(loc.x, loc.y, loc.z))
       const path = new THREE.CatmullRomCurve3(points);
-      let radius = (route[i].type == "R" ? 0.15 : 0.25);
+      let radius = (route[i].type === "R" ? 0.15 : 0.25);
       const tubeGeometry = new THREE.TubeGeometry(path, route[i].locs.length * 15, radius, 3, false);
       const tube = new THREE.Mesh(tubeGeometry, material_arr[route[i].difficulty]);
       tube.userData = route[i];
@@ -264,7 +271,7 @@ export default function Map() {
   // Switch the move control
   const switchMoveControl = () => {
     let element = document.getElementById('moveControler');
-    element.style.display = (element.style.display == 'none' ? 'flex' : 'none');
+    element.style.display = (element.style.display === 'none' ? 'flex' : 'none');
   }
 
   // Hide the card
@@ -275,7 +282,6 @@ export default function Map() {
 
   // Cascader onchange
   const inputOptionsChange = (value, index) => {
-    console.log(value)
     switch (index) {
       case 0: setStartLocation(value); break;
       case 1: setEndLocation(value); break;
@@ -301,7 +307,7 @@ export default function Map() {
 
   // Search for the routes
   const searchRoutes = async (index) => {
-    if (startLocation == null || endLocation == null || difficulty == null) {
+    if (!Array.isArray(startLocation) || !Array.isArray(endLocation)) {
       messageApi.open({
         type: 'warning',
         content: "Please complete your input before searching",
@@ -310,7 +316,8 @@ export default function Map() {
     }
     setLoadings(getLoading(index, true))
     try {
-      const data = await fetchData(`https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculateRoute?startLocationId=${startLocation[2]}&endLocationId=${endLocation[2]}`);
+      let diff = (Array.isArray(difficulty) && difficulty.length > 0) ? difficulty.join('') : '123';
+      const data = await fetchData(`https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculate-routes?startLocationId=${startLocation[2]}&endLocationId=${endLocation[2]}&&difficulty=${diff}`);
       //const data = caculateData;
       setCaculateRoutes(data.testAddArr);
       setLoadings(getLoading(index, false));
@@ -377,16 +384,17 @@ export default function Map() {
       {/* Location information card */}
       <Card
         id="selectedInfo"
-        title={<div>{card.displayName + ' '}{card.availability ? <CheckCircleTwoTone twoToneColor="#52c41a" /> : <CloseCircleTwoTone twoToneColor="#eb2f96" />}</div>}
+        title={<div>{card.displayName + ' '}</div>}
         extra={<CloseOutlined onClick={() => { closeCard() }} />}
-        actions={card.type != "L" ? [] :
+        actions={card.type !== "L" ? [] :
           [
             < Tooltip title="set as start"><HomeFilled key="setting" onClick={() => { selectLoction(card, true) }} /></Tooltip>,
             < Tooltip title="set as end"><FlagFilled key="edit" onClick={() => { selectLoction(card, false) }} /></Tooltip>,
           ]}
       >
+        {card.availability ? (<b>Available <CheckCircleTwoTone twoToneColor="#52c41a" /></b>) : (<b>Not Available <CloseCircleTwoTone twoToneColor="#eb2f96" /></b>)}
         {!card.length && <p><b>Group: </b>{card.group}</p>}
-        {card.length && <p><b>Length: </b>{card.length + "m "}<b>Slope: </b>{card.slope + "°"}</p>}
+        {card.length && <p><b>Length: </b>{card.length + "m "}</p>}
         <p>{card.description}</p>
       </Card>
       {/* Routes search panel */}
