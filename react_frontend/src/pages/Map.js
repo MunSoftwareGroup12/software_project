@@ -10,9 +10,9 @@ import { fetchData } from '../api/request'
 import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, QuestionOutlined, ProfileOutlined, DragOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
-import './Map.css';
-
+import TipsBox from '../components/TipsBox';
 import { difficultyOptions, options } from '../utils/test'
+import './Map.css';
 import originData from "../utils/iteration2_origin.json";
 import caculateData from "../utils/iteration2_caculate.json";
 
@@ -22,10 +22,10 @@ const renderer = new THREE.WebGLRenderer({
 });
 renderer.toneMapping = THREE.ACESFilmicToneMapping;
 export default function Map() {
-  const [caculateRoutes, setCaculateRoutes] = useState([]); //caculate routes information
   const [startLocation, setStartLocation] = useState(null);
   const [endLocation, setEndLocation] = useState(null);
   const [difficulty, setDifficulty] = useState(null);
+  const [caculateRoutes, setCaculateRoutes] = useState([]); //caculate routes information
   const [card, setCard] = useState({}); //selectedObj information
   const [additionalShow, setAdditionalShow] = useState(false); //indicate if there displays additional map search objs
   const [loadings, setLoadings] = useState([true, false]);
@@ -71,7 +71,6 @@ export default function Map() {
       // Add camera
       let element = document.documentElement;
       cameraRef.current = new THREE.PerspectiveCamera(75, element.clientWidth / element.clientHeight, 0.1, 2000);
-      // cameraRef.current.position.set(6.7, 6.5, 47.5);
       cameraRef.current.position.set(11.8, 11.6, 45.3);
       sceneRef.current.add(cameraRef.current)
       //Load environment texture
@@ -126,7 +125,6 @@ export default function Map() {
 
     // Click event on the map
     const onClick = (event) => {
-      // Only when click on canvas
       if (event.target.closest('.container')) {
         let rect = renderer.domElement.getBoundingClientRect();
         mouseRef.current.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
@@ -135,7 +133,6 @@ export default function Map() {
         raycasterRef.current.setFromCamera(mouseRef.current, cameraRef.current);
         let intersects = raycasterRef.current.intersectObjects(sceneRef.current.children);
         if (intersects.length > 0 && intersects[0].object.userData.id) {
-          // Raycasting
           let selectedObject = intersects[0].object;
           if (selectedObjRef.current) {
             sceneRef.current.remove(selectedObjRef.current);
@@ -186,7 +183,6 @@ export default function Map() {
       // Clean up the WebGL context and remove listener
       renderer.dispose();
       cancelAnimationFrame(animationFrameId);
-      controlsRef.current.removeEventListener('change');
       window.removeEventListener('resize', updateCameraAndRenderer);
       window.removeEventListener('click', onClick);
       controlsRef.current.removeEventListener('change', closeCard);
@@ -233,7 +229,6 @@ export default function Map() {
 
   // User decide to move the oribt target
   const moveCameraAndTarget = useCallback((directionName) => {
-    console.log("moveCameraAndTarget");
     let distance = 2;
     let oriDirection = new THREE.Vector3();
     cameraRef.current.getWorldDirection(oriDirection);
@@ -400,7 +395,7 @@ export default function Map() {
       {/* Routes search panel */}
       <Drawer
         title="Search Best Routes" placement={"bottom"} extra={<CloseOutlined onClick={() => { setPannelOpen(false) }} />}
-        maskClosable={false} closable={false} open={pannelOpen}
+        closable={false} open={pannelOpen} onClose={() => { setPannelOpen(false) }}
       >
         <Flex className="searchAreaBox" justify="center">
           <Flex className="searchArea" justify="center" wrap="wrap" gap="small">
@@ -446,20 +441,11 @@ export default function Map() {
           })}
         />
       </Modal>
+      {/* Tips modal */}
       <Modal title="Tips" okText="Got it!" cancelButtonProps={{ style: { display: 'none' } }}
         closeIcon={false} open={isTipsOpen} onOk={() => { setIsTipsOpen(false) }}
       >
-        <b>Basic operations:</b>
-        <p>-Click on a location or a route to check the detail.</p>
-        <p>-Click <DragOutlined /> button to open the move controller (not neccessary for mobile).</p>
-        <p>-Click <QuestionOutlined /> button to reopen the tips instructions.</p>
-        <b>How to caculate a route?</b>
-        <p>-Click on a location to open detail pannel, click <HomeFilled /> button to set as start or click <FlagFilled /> button to set as end.</p>
-        <p>-Your can also click <SearchOutlined /> button to set start and end from drop-down box.</p>
-        <b>After caculation finished, you can...</b>
-        <p>-Choose a route you want to display on the map.</p>
-        <p>-Click <ProfileOutlined /> button to redisplay the list of caculated routes.</p>
-        <p>-Click <CloseOutlined /> button to restore the original map display.</p>
+        <TipsBox />
       </Modal>
     </div >
   );
