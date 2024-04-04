@@ -23,7 +23,7 @@ app.use((req, res, next) => {
 });
 
 app.use('/', indexRouter);
-app.use('/calculated-routes', calculatedRoutesRouter);
+app.use('/calculate-routes', calculatedRoutesRouter);
 app.use('/map', mapRouter);
 
 module.exports = app;
