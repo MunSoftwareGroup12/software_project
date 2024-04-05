@@ -31,7 +31,7 @@ module.exports = class RouteManager {
             allPaths.push([...path]);
         } else {
             graph[start].forEach(edge => {
-                if (!visited[edge.end] && difficultyLevels.includes(edge.difficulty)) {
+                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && start.z > edge.end.z || edge.difficulty === 0)) {
                     this.findAllRoutePaths(graph, edge.end, end, visited, path.concat(edge.routeId), allPaths, difficultyLevels);
                 }
             });
@@ -67,7 +67,6 @@ module.exports = class RouteManager {
             return currentLength < shortestLength ? path : shortest;
         }, allPaths[0]);
     }
-
 
     findLongestPath(allPaths, jsonData) {
         if (allPaths.length === 0) return [];
@@ -120,7 +119,7 @@ module.exports = class RouteManager {
         return [
             shortestPathResult,
             longestPathResult
-        ];
+        ].filter(r => r.routes.length > 0);
     }
 
 }

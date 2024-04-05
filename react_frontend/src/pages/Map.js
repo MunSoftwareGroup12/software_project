@@ -320,8 +320,7 @@ export default function Map() {
     try {
       let diff = (Array.isArray(difficulty) && difficulty.length > 0) ? difficulty.join('') : '123';
       const data = await fetchData(`https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculate-routes?startLocationId=${startLocation[2]}&endLocationId=${endLocation[2]}&&difficulty=${diff}`);
-      //const data = caculateData;
-      setCaculateRoutes(data.testAddArr);
+      setCaculateRoutes(data);
       setLoadings(getLoading(index, false));
       setPannelOpen(false);
       setIsModalOpen(true);
