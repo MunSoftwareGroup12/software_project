@@ -48,10 +48,6 @@ const routeSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    slope: {
-        type: Number,
-        required: true
-    },
     locs: [pointSchema],
     description: {
         type: String,
