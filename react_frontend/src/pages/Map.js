@@ -397,8 +397,8 @@ export default function Map() {
           ]}
       >
         {card.availability ? (<b>Available <CheckCircleTwoTone twoToneColor="#52c41a" /></b>) : (<b>Not Available <CloseCircleTwoTone twoToneColor="#eb2f96" /></b>)}
-        {!card.length && <p><b>Group: </b>{card.group}</p>}
-        {card.length && <p><b>Length: </b>{card.length + "m "}</p>}
+        {!(card.length >= 0) && <p><b>Group: </b>{card.group}</p>}
+        {(card.length > 0) && <p><b>Length: </b>{card.length + "m "}</p>}
         <p>{card.description}</p>
       </Card>
       {/* Routes search panel */}
