@@ -39,7 +39,7 @@ module.exports = class RouteManager {
         } else {
             graph[start].forEach((edge) => {
                 const endLocation = this.locationManager.getLocation(edge.end);
-                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && startLocation.z >= endLocation.z || edge.difficulty === 0)) {
+                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && startLocation.y >= endLocation.y || edge.difficulty === 0)) {
                     this.findAllRoutePaths(graph, edge.end, end, visited, path.concat(edge.routeId), allPaths, difficultyLevels);
                 }
             });
