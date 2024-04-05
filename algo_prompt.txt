@@ -1,0 +1,21 @@
+Analyze this data of a ski-resort map in the file "iteration2_origin.json", it contains locations and routes.
+Write a complete program which returns all possible routes, given the id of starting location and ending location.
+From those all possible routes, I want you to return only a couple of routes like the smallest one, the longest one, the one which has most routes' id starting with R, the one which has most route's id starting with K.
+The program should return data in the similar format shared in the file "iteration2_caculate.json".
+Execute the program and verify/validate by choosing any two sample locations. Verify the correct working.
+
+
+-----
+
+
+This is the map of ski-resort, it contains two fields at root level, "locations" and "routes".
+The "routes" field has inside of it "locs" field which is an array, which shows all the locations that this route is connecting, but the values in the array are missing location id.
+I want you to fill those ids by looking up the locations at root level and comparing the coordinates. Fill the ids of locations in "locs"  inside "routes". If there is no exact match, just ignore those locations.
+
+
+_____
+
+
+Generate the plot for the data in "interation2_origin.json" file attached. It contains "locations" and "routes".
+Use "locations" to draw nodes and "routes" to draw edges. Include labels containing ids from labels and routes.
+

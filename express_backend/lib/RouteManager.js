@@ -177,16 +177,16 @@ module.exports = class RouteManager {
         const shortestTimePath = this.findFastestPath(allRoutePaths, map);
         const longestLengthPath = this.findLongestLengthPath(allRoutePaths, map);
 
-        const liftsOnlyPathResult = this.formatPathResult(1, "Lifts Only", liftsOnlyPath, map);
-        const easiestPathResult = this.formatPathResult(2, "Easiest", easiestPath, map);
-        const shortestTimePathResult = this.formatPathResult(3, "Fastest", shortestTimePath, map);
-        const longestLengthPathResult = this.formatPathResult(4, "Longest Length", longestLengthPath, map);
+        const easiestPathResult = this.formatPathResult(1, "Easiest", easiestPath, map);
+        const shortestTimePathResult = this.formatPathResult(2, "Fastest", shortestTimePath, map);
+        const longestLengthPathResult = this.formatPathResult(3, "Longest", longestLengthPath, map);
+        const liftsOnlyPathResult = this.formatPathResult(4, "Lifts Only", liftsOnlyPath, map);
 
         return [
-            liftsOnlyPathResult,
             easiestPathResult,
             shortestTimePathResult,
-            longestLengthPathResult
+            longestLengthPathResult,
+            liftsOnlyPathResult
         ].filter(r => r.routes.length > 0);
     }
 
