@@ -9,28 +9,24 @@ export default function RouteItem(props) {
     },
     {
       key: '2',
-      label: 'Route Condition',
-      children: props.routeData.details.condition,
-    },
-    {
-      key: '3',
-      label: 'Total Length',
+      label: 'Ski Length',
       children: props.routeData.details.length,
     },
     {
-      key: '4',
-      label: 'Number of path nodes',
-      children: props.routeData.locations.length,
+      key: '3',
+      label: 'Number of waypoints',
+      children: props.routeData.locations.length - 2,
     },
     {
-      key: '5',
-      label: 'Number of route segements',
-      children: props.routeData.routes.length,
+      key: '4',
+      label: 'Number of lifts',
+      children: (function countDifficultyZero(routes) {
+        return routes.filter(route => route.difficulty === 0).length;
+      }(props.routeData.routes)),
     },
   ];
   return (
     <Descriptions title={props.routeData.tag + " route"}
       column={1} items={items} />
-
   );
 }

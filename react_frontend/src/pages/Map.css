@@ -14,24 +14,24 @@
     padding-bottom: 1rem;
 }
 
-.searchItem {
-    width: 80%;
+.searchLoItem {
+    width: 45%;
 }
 
-.searchButton {
+.searchItem {
     width: 80%;
-    margin-top: 1rem;
 }
 
 .container {
     position: relative;
 }
 
-.moveControler {
+#moveControler {
+    display: none;
     transform: translateY(-120px);
 }
 
-.moveControler>div {
+#moveControler>div {
     gap: 40px;
 }
 
@@ -44,6 +44,6 @@
     user-select: none;
 }
 
-.ant-spin-fullscreen{
+.ant-spin-fullscreen {
     backdrop-filter: blur(15px);
 }

@@ -1,0 +1,1075 @@
+{
+    "locations": [
+        {
+            "id": "L001",
+            "name": "Frostwood",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area1",
+            "description": "this is a snow location",
+            "x": -21.7,
+            "y": -0.7,
+            "z": 49.7
+        },
+        {
+            "id": "L002",
+            "name": "Mistaken Point",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area1",
+            "description": "This is the first ski location!",
+            "x": -13,
+            "y": 0.5,
+            "z": 46.8
+        },
+        {
+            "id": "L003",
+            "name": "Crystal",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area1",
+            "description": "this is a snow location",
+            "x": -1.9,
+            "y": -2.5,
+            "z": 46.5
+        },
+        {
+            "id": "L004",
+            "name": "Toilet_01",
+            "type": "L",
+            "availability": true,
+            "group":"facility/toilet",
+            "description": "this is a toilet",
+            "x": -22,
+            "y": 2.4,
+            "z": 32.7
+        },
+        {
+            "id": "L005",
+            "name": "Winterwood",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area1",
+            "description": "this is a snow location",
+            "x": -26.7,
+            "y": 1.3,
+            "z": 34.7
+        },
+        {
+            "id": "L006",
+            "name": "Snowdrift",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area2",
+            "description": "this is a snow location",
+            "x": -32,
+            "y": 3,
+            "z": 24.8
+        },
+        {
+            "id": "L007",
+            "name": "Chillwind",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area2",
+            "description": "this is a snow location",
+            "x": -42.3,
+            "y": 3.8,
+            "z": 29.6
+        },
+        {
+            "id": "L008",
+            "name": "Icicle",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area2",
+            "description": "this is a snow location",
+            "x": -19.5,
+            "y": 0.2,
+            "z": 15.4
+        },
+        {
+            "id": "L009",
+            "name": "Alpine Ridg",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area3",
+            "description": "this is a snow location",
+            "x": -5.5,
+            "y": -2.2,
+            "z": 30.7
+        },
+        {
+            "id": "L010",
+            "name": "Aurora",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area3",
+            "description": "this is a snow location",
+            "x": -8.9,
+            "y": 0.1,
+            "z": 17.1
+        },
+        {
+            "id": "L011",
+            "name": "Haven",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area3",
+            "description": "this is a snow location",
+            "x": -4.5,
+            "y": 0.5,
+            "z": 15.2
+        },
+        {
+            "id": "L012",
+            "name": "Toilet_02",
+            "type": "L",
+            "availability": true,
+            "group":"facility/toilet",
+            "description": "this is a toilet",
+            "x": 2.5,
+            "y": -0.7,
+            "z": 18
+        },
+        {
+            "id": "L013",
+            "name": "Asian sushi",
+            "type": "L",
+            "availability": true,
+            "group":"facility/restaurant",
+            "description": "Dive into a world of exquisite sushi, where fresh flavors and Asian tradition blend in perfect harmony.",
+            "x": 3.5,
+            "y": -2.4,
+            "z": 33.7
+        },
+        {
+            "id": "L014",
+            "name": "Windwild",
+            "type": "L",
+            "availability": true,
+            "group":"skiPoint/area3",
+            "description": "this is a snow location",
+            "x": 8.5,
+            "y": 0.3,
+            "z": 14.7
+        }
+    ],
+    "routes": [
+        {
+            "id": "R001",
+            "name": "Ski trail to Turrach Lift",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 1200,
+            "locs": [
+                {
+                    "x": -13,
+                    "y": 0.5,
+                    "z": 46.8,
+                    "id": "L002"
+                },
+                {
+                    "x": -8.7,
+                    "y": -0.9,
+                    "z": 46.7
+                },
+                {
+                    "x": -4,
+                    "y": -2.3,
+                    "z": 48.2
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5,
+                    "id": "L003"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R002",
+            "name": "Iron Hat Descent",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 2150,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7,
+                    "id": "L004"
+                },
+                {
+                    "x": -20.9,
+                    "y": 1.7,
+                    "z": 34.8
+                },
+                {
+                    "x": -16.8,
+                    "y": 0.8,
+                    "z": 38.6
+                },
+                {
+                    "x": -14.9,
+                    "y": 0.3,
+                    "z": 39.6
+                },
+                {
+                    "x": -7.1,
+                    "y": -2,
+                    "z": 38.5
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5,
+                    "id": "L003"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R003",
+            "name": "Direct Descent",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 600,
+            "locs": [
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7,
+                    "id": "L001"
+                },
+                {
+                    "x": -17.3,
+                    "y": 0,
+                    "z": 46.4
+                },
+                {
+                    "x": -13,
+                    "y": 0.5,
+                    "z": 46.8,
+                    "id": "L002"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R004",
+            "name": "Side Jump",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 1350,
+            "locs": [
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7,
+                    "id": "L001"
+                },
+                {
+                    "x": -29.4,
+                    "y": 0,
+                    "z": 41.7
+                },
+                {
+                    "x": -29.5,
+                    "y": 0.6,
+                    "z": 38.5
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7,
+                    "id": "L005"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R005",
+            "name": "Black Lake Descent",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 750,
+            "locs": [
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8,
+                    "id": "L006"
+                },
+                {
+                    "x": -30.5,
+                    "y": 2.5,
+                    "z": 27.5
+                },
+                {
+                    "x": -28.5,
+                    "y": 2.1,
+                    "z": 28.7
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7,
+                    "id": "L005"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R006",
+            "name": "Wide Valley Descent",
+            "type": "R",
+            "difficulty": 3,
+            "availability": true,
+            "length": 1400,
+            "locs": [
+                {
+                    "x": -42.3,
+                    "y": 3.8,
+                    "z": 29.6,
+                    "id": "L007"
+                },
+                {
+                    "x": -40.8,
+                    "y": 2.9,
+                    "z": 32.1
+                },
+                {
+                    "x": -36.5,
+                    "y": 1.5,
+                    "z": 35.5
+                },
+                {
+                    "x": -30.5,
+                    "y": 0.2,
+                    "z": 42.7
+                },
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7,
+                    "id": "L001"
+                }
+            ],
+            "description": "Black ski slope"
+        },
+        {
+            "id": "R007",
+            "name": "Border Corner Descent",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 600,
+            "locs": [
+                {
+                    "x": -42.3,
+                    "y": 3.8,
+                    "z": 29.6,
+                    "id": "L007"
+                },
+                {
+                    "x": -38.6,
+                    "y": 3.3,
+                    "z": 26.5
+                },
+                {
+                    "x": -34.6,
+                    "y": 2.9,
+                    "z": 26.4
+                },
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8,
+                    "id": "L006"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R008",
+            "name": "Descent Sun Lift",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 830,
+            "locs": [
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8,
+                    "id": "L006"
+                },
+                {
+                    "x": -28.7,
+                    "y": 2.4,
+                    "z": 24.9
+                },
+                {
+                    "x": -27.5,
+                    "y": 2.2,
+                    "z": 23
+                },
+                {
+                    "x": -24.2,
+                    "y": 1.3,
+                    "z": 21.5
+                },
+                {
+                    "x": -19.5,
+                    "y": 0.2,
+                    "z": 15.4,
+                    "id": "L008"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R009",
+            "name": "Ski trail to Sun Lift",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 1250,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7,
+                    "id": "L004"
+                },
+                {
+                    "x": -23.5,
+                    "y": 2.3,
+                    "z": 28.7
+                },
+                {
+                    "x": -21.7,
+                    "y": 2.2,
+                    "z": 28.6
+                },
+                {
+                    "x": -20.4,
+                    "y": 2.2,
+                    "z": 23.6
+                },
+                {
+                    "x": -19.6,
+                    "y": 1.3,
+                    "z": 21.1
+                },
+                {
+                    "x": -19.5,
+                    "y": 0.2,
+                    "z": 15.4,
+                    "id": "L008"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R010",
+            "name": "Alibi f\u00fcr Seitensprung",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 650,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7,
+                    "id": "L004"
+                },
+                {
+                    "x": -23.8,
+                    "y": 2.2,
+                    "z": 31.5
+                },
+                {
+                    "x": -24.7,
+                    "y": 2,
+                    "z": 32.7
+                },
+                {
+                    "x": -26.1,
+                    "y": 1.6,
+                    "z": 32.1
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7,
+                    "id": "L005"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R011",
+            "name": "Zirbenwaldabfahrt_01",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 1350,
+            "locs": [
+                {
+                    "x": -5.5,
+                    "y": -2.2,
+                    "z": 30.7,
+                    "id": "L009"
+                },
+                {
+                    "x": -5.5,
+                    "y": -2.3,
+                    "z": 34.7
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5,
+                    "id": "L003"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R012",
+            "name": "Zirbenwaldabfahrt_02",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 600,
+            "locs": [
+                {
+                    "x": -5.5,
+                    "y": -2.2,
+                    "z": 30.7,
+                    "id": "L009"
+                },
+                {
+                    "x": -3.5,
+                    "y": -2.3,
+                    "z": 34.7
+                },
+                {
+                    "x": 3.5,
+                    "y": -2.4,
+                    "z": 33.7,
+                    "id": "L013"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R013",
+            "name": "Zirbenwaldabfahrt_03",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 650,
+            "locs": [
+                {
+                    "x": -8.9,
+                    "y": 0.1,
+                    "z": 17.1,
+                    "id": "L010"
+                },
+                {
+                    "x": -5.3,
+                    "y": -1.3,
+                    "z": 21.4
+                },
+                {
+                    "x": -7.8,
+                    "y": -1.6,
+                    "z": 27.7
+                },
+                {
+                    "x": -5.5,
+                    "y": -2.2,
+                    "z": 30.7,
+                    "id": "L009"
+                }
+            ],
+            "description": "Red ski slope"
+        },
+        {
+            "id": "R014",
+            "name": "M\u00e4rchenwaldabfahrt_01",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 1300,
+            "locs": [
+                {
+                    "x": -8.9,
+                    "y": 0.1,
+                    "z": 17.1,
+                    "id": "L010"
+                },
+                {
+                    "x": -6.7,
+                    "y": -0.9,
+                    "z": 18.8
+                },
+                {
+                    "x": -2.5,
+                    "y": -1.5,
+                    "z": 23.2
+                },
+                {
+                    "x": 3.5,
+                    "y": -1.7,
+                    "z": 24.2
+                },
+                {
+                    "x": 3.5,
+                    "y": -2.4,
+                    "z": 33.7,
+                    "id": "L013"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R015",
+            "name": "Wild Head Descent",
+            "type": "R",
+            "difficulty": 1,
+            "availability": true,
+            "length": 600,
+            "locs": [
+                {
+                    "x": -8.9,
+                    "y": 0.1,
+                    "z": 17.1,
+                    "id": "L010"
+                },
+                {
+                    "x": -4,
+                    "y": -0.7,
+                    "z": 19.6
+                },
+                {
+                    "x": 2.5,
+                    "y": -0.7,
+                    "z": 18,
+                    "id": "L012"
+                }
+            ],
+            "description": "Blue ski slope"
+        },
+        {
+            "id": "R016",
+            "name": "Lamp Descent",
+            "type": "R",
+            "difficulty": 3,
+            "availability": true,
+            "length": 450,
+            "locs": [
+                {
+                    "x": 2.5,
+                    "y": -0.7,
+                    "z": 18,
+                    "id": "L012"
+                },
+                {
+                    "x": -0.4,
+                    "y": -0.3,
+                    "z": 14.9
+                },
+                {
+                    "x": -4.5,
+                    "y": 0.5,
+                    "z": 15.2,
+                    "id": "L011"
+                }
+            ],
+            "description": "Black ski slope"
+        },
+        {
+            "id": "R017",
+            "name": "Märchenwaldabfahrt_02",
+            "type": "R",
+            "difficulty": 2,
+            "availability": true,
+            "length": 1250,
+            "locs": [
+                {
+                    "x": 8.5,
+                    "y": 0.3,
+                    "z": 14.7,
+                    "id": "L014"
+                },
+                {
+                    "x": 7.2,
+                    "y": -1.3,
+                    "z": 22.3
+                },
+                {
+                    "x": 3.5,
+                    "y": -2.4,
+                    "z": 33.7,
+                    "id": "L013"
+                }
+            ],
+            "description": "red ski slope"
+        },
+        {
+            "id": "R018",
+            "name": "Fis Descent",
+            "type": "R",
+            "difficulty": 3,
+            "availability": true,
+            "length": 1200,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7,
+                    "id": "L004"
+                },
+                {
+                    "x": -17.2,
+                    "y": 0.6,
+                    "z": 31.7
+                },
+                {
+                    "x": -15,
+                    "y": 0.2,
+                    "z": 32.7
+                },
+                {
+                    "x": -5.5,
+                    "y": -2.2,
+                    "z": 30.7,
+                    "id": "L009"
+                }
+            ],
+            "description": "Black ski slope"
+        },
+        {
+            "id": "K001",
+            "name": "Turrachbahn_01",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 550,
+            "locs": [
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7,
+                    "id": "L001"
+                },
+                {
+                    "x": -16.2,
+                    "y": 0.3,
+                    "z": 47.8
+                },
+                {
+                    "x": -13,
+                    "y": 0.5,
+                    "z": 46.8,
+                    "id": "L002"
+                }
+            ],
+            "description": "6-seater chairlift"
+        },
+        {
+            "id": "K002",
+            "name": "Turrachbahn_02",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 1900,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7,
+                    "id": "L004"
+                },
+                {
+                    "x": -18.5,
+                    "y": 1.9,
+                    "z": 35.1
+                },
+                {
+                    "x": -1.9,
+                    "y": -2.5,
+                    "z": 46.5,
+                    "id": "L003"
+                }
+            ],
+            "description": "6-seater chairlift"
+        },
+        {
+            "id": "K003",
+            "name": "Seitensprunglift",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 300,
+            "locs": [
+                {
+                    "x": -22,
+                    "y": 2.4,
+                    "z": 32.7,
+                    "id": "L004"
+                },
+                {
+                    "x": -24,
+                    "y": 2.3,
+                    "z": 33.5
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7,
+                    "id": "L005"
+                }
+            ],
+            "description": "Ski lift"
+        },
+        {
+            "id": "K004",
+            "name": "Weitentallift_02",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 650,
+            "locs": [
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8,
+                    "id": "L006"
+                },
+                {
+                    "x": -31.2,
+                    "y": 2.6,
+                    "z": 27.4
+                },
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7,
+                    "id": "L005"
+                }
+            ],
+            "description": "Ski lift"
+        },
+        {
+            "id": "K005",
+            "name": "Weitentallift_01",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 1250,
+            "locs": [
+                {
+                    "x": -26.7,
+                    "y": 1.3,
+                    "z": 34.7,
+                    "id": "L005"
+                },
+                {
+                    "x": -26.3,
+                    "y": 1.3,
+                    "z": 35.9
+                },
+                {
+                    "x": -21.7,
+                    "y": -0.7,
+                    "z": 49.7,
+                    "id": "L001"
+                }
+            ],
+            "description": "Ski lift"
+        },
+        {
+            "id": "K006",
+            "name": "Sonnenbahn_01",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 600,
+            "locs": [
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8,
+                    "id": "L006"
+                },
+                {
+                    "x": -30.5,
+                    "y": 3.1,
+                    "z": 23.7
+                },
+                {
+                    "x": -25.1,
+                    "y": 2,
+                    "z": 19.7
+                },
+                {
+                    "x": -19.5,
+                    "y": 0.2,
+                    "z": 15.4,
+                    "id": "L008"
+                }
+            ],
+            "description": "2-seater chairlift"
+        },
+        {
+            "id": "K007",
+            "name": "Sonnenbahn_02",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 700,
+            "locs": [
+                {
+                    "x": -42.3,
+                    "y": 3.8,
+                    "z": 29.6,
+                    "id": "L007"
+                },
+                {
+                    "x": -32,
+                    "y": 3,
+                    "z": 24.8,
+                    "id": "L006"
+                }
+            ],
+            "description": "2-seater chairlift"
+        },
+        {
+            "id": "K008",
+            "name": "Pine Forest Lift",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 1100,
+            "locs": [
+                {
+                    "x": -8.9,
+                    "y": 0.1,
+                    "z": 17.1,
+                    "id": "L010"
+                },
+                {
+                    "x": 3.5,
+                    "y": -2.4,
+                    "z": 33.7,
+                    "id": "L013"
+                }
+            ],
+            "description": "6-seater chairlift"
+        },
+        {
+            "id": "K009",
+            "name": "Wild Head Lift",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 500,
+            "locs": [
+                {
+                    "x": 2.5,
+                    "y": -0.7,
+                    "z": 18,
+                    "id": "L012"
+                },
+                {
+                    "x": -4.5,
+                    "y": 0.5,
+                    "z": 15.2,
+                    "id": "L011"
+                }
+            ],
+            "description": "2 seater chairlift"
+        },
+        {
+            "id": "K010",
+            "name": "Mole",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 550,
+            "locs": [
+                {
+                    "x": 2.5,
+                    "y": -0.7,
+                    "z": 18,
+                    "id": "L012"
+                },
+                {
+                    "x": 8.5,
+                    "y": 0.3,
+                    "z": 14.7,
+                    "id": "L014"
+                }
+            ],
+            "description": "Ski lift"
+        },
+        {
+            "id": "K011",
+            "name": "Naminodo",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 550,
+            "locs": [
+                {
+                    "x": -19.5,
+                    "y": 0.2,
+                    "z": 15.4,
+                    "id": "L008"
+                },
+                {
+                    "x": -8.9,
+                    "y": 0.1,
+                    "z": 17.1,
+                    "id": "L010"
+                }
+            ],
+            "description": "2 seater chairlift"
+        },
+        {
+            "id": "K012",
+            "name": "Hana",
+            "type": "K",
+            "difficulty": 0,
+            "availability": true,
+            "length": 300,
+            "locs": [
+                {
+                    "x": -8.9,
+                    "y": 0.1,
+                    "z": 17.1,
+                    "id": "L010"
+                },
+                {
+                    "x": -4.5,
+                    "y": 0.5,
+                    "z": 15.2,
+                    "id": "L011"
+                }
+            ],
+            "description": "2 seater chairlift"
+        }
+    ]
+}
