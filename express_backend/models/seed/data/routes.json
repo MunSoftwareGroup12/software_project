@@ -609,7 +609,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 550,
+        "length": 0,
         "locs": [
             {
                 "x": -21.7,
@@ -637,7 +637,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 1900,
+        "length": 0,
         "locs": [
             {
                 "x": -22,
@@ -665,7 +665,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 300,
+        "length": 0,
         "locs": [
             {
                 "x": -22,
@@ -693,7 +693,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 650,
+        "length": 0,
         "locs": [
             {
                 "x": -32,
@@ -721,7 +721,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 1250,
+        "length": 0,
         "locs": [
             {
                 "x": -26.7,
@@ -749,7 +749,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 600,
+        "length": 0,
         "locs": [
             {
                 "x": -32,
@@ -782,7 +782,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 700,
+        "length": 0,
         "locs": [
             {
                 "x": -42.3,
@@ -805,7 +805,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 1100,
+        "length": 0,
         "locs": [
             {
                 "x": -8.9,
@@ -828,7 +828,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 500,
+        "length": 0,
         "locs": [
             {
                 "x": 2.5,
@@ -851,7 +851,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 550,
+        "length": 0,
         "locs": [
             {
                 "x": 2.5,
@@ -874,7 +874,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 550,
+        "length": 0,
         "locs": [
             {
                 "x": -19.5,
@@ -897,7 +897,7 @@
         "type": "K",
         "difficulty": 0,
         "availability": true,
-        "length": 300,
+        "length": 0,
         "locs": [
             {
                 "x": -8.9,

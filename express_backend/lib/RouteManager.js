@@ -1,5 +1,10 @@
+const LocationManager = require('./LocationManager');
 
 module.exports = class RouteManager {
+
+    constructor(locationManager) {
+        this.locationManager = locationManager;
+    }
 
     buildGraphWithRoutes(routes, locations) {
         const graph = {};
@@ -27,11 +32,14 @@ module.exports = class RouteManager {
     findAllRoutePaths(graph, start, end, visited, path, allPaths, difficultyLevels) {
         visited[start] = true;
 
+        const startLocation = this.locationManager.getLocation(start);
+
         if (start === end) {
             allPaths.push([...path]);
         } else {
-            graph[start].forEach(edge => {
-                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && start.z > edge.end.z || edge.difficulty === 0)) {
+            graph[start].forEach((edge) => {
+                const endLocation = this.locationManager.getLocation(edge.end);
+                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && startLocation.z >= endLocation.z || edge.difficulty === 0)) {
                     this.findAllRoutePaths(graph, edge.end, end, visited, path.concat(edge.routeId), allPaths, difficultyLevels);
                 }
             });
@@ -40,10 +48,10 @@ module.exports = class RouteManager {
         visited[start] = false;
     }
 
-    findRoutePaths(jsonData, startId, endId, difficultyLevels) {
-        const graph = this.buildGraphWithRoutes(jsonData.routes, jsonData.locations);
+    findRoutePaths(map, startId, endId, difficultyLevels) {
+        const graph = this.buildGraphWithRoutes(map.routes, map.locations);
         const visited = {};
-        jsonData.locations.forEach(location => {
+        map.locations.forEach(location => {
             visited[location.id] = false;
         });
         const allPaths = [];
@@ -58,31 +66,72 @@ module.exports = class RouteManager {
         }, 0);
     }
 
-    findShortestPath(allPaths, jsonData) {
+    getPathTime(path, routes) {
+        return path.reduce((acc, routeId) => {
+            const route = routes.find(route => route.id === routeId);
+            let time = 0;
+            if (route.type === 'K') time = 7;
+            else time = (route.length / 1000) / (20 / 60);
+            return acc + time;
+        }, 0);
+    }
+
+    getPathEasinessScore(path, routes) {
+        return path.reduce((acc, routeId) => {
+            const route = routes.find(route => route.id === routeId);
+            let easiness = 1;
+            if (route.difficulty == 2) easiness = 1.5;
+            else if (route.difficulty == 3) easiness = 2;
+            return acc + route.length * easiness;
+        }, 0);
+    }
+
+    findShortestLengthPath(allPaths, map) {
         if (allPaths.length === 0) return [];
 
         return allPaths.reduce((shortest, path) => {
-            const shortestLength = this.getPathLength(shortest, jsonData.routes);
-            const currentLength = this.getPathLength(path, jsonData.routes);
+            const shortestLength = this.getPathLength(shortest, map.routes);
+            const currentLength = this.getPathLength(path, map.routes);
             return currentLength < shortestLength ? path : shortest;
         }, allPaths[0]);
     }
 
-    findLongestPath(allPaths, jsonData) {
+    findLongestLengthPath(allPaths, map) {
         if (allPaths.length === 0) return [];
 
         return allPaths.reduce((longest, path) => {
-            const longestLength = this.getPathLength(longest, jsonData.routes);
-            const currentLength = this.getPathLength(path, jsonData.routes);
+            const longestLength = this.getPathLength(longest, map.routes);
+            const currentLength = this.getPathLength(path, map.routes);
             return currentLength > longestLength ? path : longest;
         }, allPaths[0]);
     }
 
-    formatPathResult(id, tag, path, jsonData) {
-        const routeDetails = path.map(routeId => jsonData.routes.find(route => route.id === routeId));
+    findEasiestPath(allPaths, map) {
+        if (allPaths.length === 0) return [];
+
+        return allPaths.reduce((easiest, path) => {
+            const easiestPath = this.getPathEasinessScore(easiest, map.routes);
+            const current = this.getPathEasinessScore(path, map.routes);
+            return current < easiestPath ? path : easiest;
+        }, allPaths[0]);
+    }
+
+    findFastestPath(allPaths, map) {
+        if (allPaths.length === 0) return [];
+
+        return allPaths.reduce((shortest, path) => {
+            const shortestLength = this.getPathTime(shortest, map.routes);
+            const currentLength = this.getPathTime(path, map.routes);
+            return currentLength < shortestLength ? path : shortest;
+        }, allPaths[0]);
+    }
+
+    formatPathResult(id, tag, path, map) {
+        const routeDetails = path.map(routeId => map.routes.find(route => route.id === routeId));
         const totalLength = routeDetails.reduce((acc, route) => acc + route.length, 0);
-        const estimateTime = `${Math.round((totalLength / 1000) / 15 * 60)}m`;  // Convert distance to km and time to minutes
-        const condition = `↗${routeDetails.reduce((acc, route) => acc + route.slope, 0)}m`;  // Sum of the slopes as a simplified aggregation
+        const numberOfLifts = routeDetails.reduce((acc, route) => acc + (route.type === 'K' ? 1: 0), 0);
+        const estimateTime = `${Math.round((totalLength / 1000) / 20 * 60) + numberOfLifts * 7}m`;
+        const condition = `↗${routeDetails.reduce((acc, route) => acc + route.slope, 0)}m`;
 
         const locations = [];
         routeDetails.forEach(route => {
@@ -110,15 +159,21 @@ module.exports = class RouteManager {
     calculateRoutes(map, startLocationId, endLocationId, difficultyLevels) {
         const allRoutePaths = this.findRoutePaths(map, startLocationId, endLocationId, difficultyLevels);
 
-        const shortestPath = this.findShortestPath(allRoutePaths, map);
-        const longestPath = this.findLongestPath(allRoutePaths, map);
+        const easiestPath = this.findEasiestPath(allRoutePaths, map);
+        const shortestTimePath = this.findFastestPath(allRoutePaths, map);
+        const shortestLengthPath = this.findShortestLengthPath(allRoutePaths, map);
+        const longestLengthPath = this.findLongestLengthPath(allRoutePaths, map);
 
-        const shortestPathResult = this.formatPathResult(1, "Shortest", shortestPath, map);
-        const longestPathResult = this.formatPathResult(2, "Longest", longestPath, map);
+        const easiestPathResult = this.formatPathResult(1, "Easiest", easiestPath, map);
+        const shortestTimePathResult = this.formatPathResult(2, "Fastest", shortestTimePath, map);
+        const shortestLengthPathResult = this.formatPathResult(3, "Shortest Length", shortestLengthPath, map);
+        const longestLengthPathResult = this.formatPathResult(4, "Longest Length", longestLengthPath, map);
 
         return [
-            shortestPathResult,
-            longestPathResult
+            easiestPathResult,
+            shortestTimePathResult,
+            shortestLengthPathResult,
+            longestLengthPathResult
         ].filter(r => r.routes.length > 0);
     }
 

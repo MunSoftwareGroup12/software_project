@@ -19,7 +19,7 @@ export default function RouteItem(props) {
     },
     {
       key: '5',
-      label: 'Number of routes without difficulty',
+      label: 'Number of lifts',
       children: (function countDifficultyZero(routes) {
         return routes.filter(route => route.difficulty === 0).length;
       }(props.routeData.routes)),
