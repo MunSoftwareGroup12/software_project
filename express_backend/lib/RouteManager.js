@@ -68,7 +68,6 @@ module.exports = class RouteManager {
 
     getPathTime(path, routes) {
         return path.reduce((acc, routeId) => {
-            console.log({routes})
             const route = routes.find(route => route.id === routeId);
             let time = 0;
             if (route.type === 'K') time = 7;
