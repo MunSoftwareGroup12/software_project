@@ -3,6 +3,7 @@ var router = express.Router();
 const Location = require('../../models/Location');
 const Route = require('../../models/Route');
 const RouteManager = require('../../lib/RouteManager');
+const LocationManager = require('../../lib/LocationManager');
 
 
 router.get('/', async function (req, res, next) {
@@ -12,7 +13,7 @@ router.get('/', async function (req, res, next) {
         locations: await Location.find({}),
         routes: await Route.find({})
     }
-    const routeManager = new RouteManager();
+    const routeManager = new RouteManager(new LocationManager(await Location.find({})));
     res.json(routeManager.calculateRoutes(map, startLocationId, endLocationId, [...difficulty].map(x => parseInt(x))));
 });
 

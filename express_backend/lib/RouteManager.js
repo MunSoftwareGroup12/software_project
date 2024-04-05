@@ -1,5 +1,10 @@
+const LocationManager = require('./LocationManager');
 
 module.exports = class RouteManager {
+
+    constructor(locationManager) {
+        this.locationManager = locationManager;
+    }
 
     buildGraphWithRoutes(routes, locations) {
         const graph = {};
@@ -27,11 +32,14 @@ module.exports = class RouteManager {
     findAllRoutePaths(graph, start, end, visited, path, allPaths, difficultyLevels) {
         visited[start] = true;
 
+        const startLocation = this.locationManager.getLocation(start);
+
         if (start === end) {
             allPaths.push([...path]);
         } else {
-            graph[start].forEach(edge => {
-                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && start.z > edge.end.z || edge.difficulty === 0)) {
+            graph[start].forEach((edge) => {
+                const endLocation = this.locationManager.getLocation(edge.end);
+                if (!visited[edge.end] && (difficultyLevels.includes(edge.difficulty) && startLocation.z >= endLocation.z || edge.difficulty === 0)) {
                     this.findAllRoutePaths(graph, edge.end, end, visited, path.concat(edge.routeId), allPaths, difficultyLevels);
                 }
             });
