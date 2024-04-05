@@ -66,6 +66,20 @@ module.exports = class RouteManager {
         }, 0);
     }
 
+    getLiftsCount(path, routes) {
+        return path.reduce((acc, routeId) => {
+            const route = routes.find(route => route.id === routeId);
+            return acc + (route.type === 'K');
+        }, 0);
+    }
+
+    getSlopesCount(path, routes) {
+        return path.reduce((acc, routeId) => {
+            const route = routes.find(route => route.id === routeId);
+            return acc + (route.type === 'R');
+        }, 0);
+    }
+
     getPathTime(path, routes) {
         return path.reduce((acc, routeId) => {
             const route = routes.find(route => route.id === routeId);
@@ -79,21 +93,21 @@ module.exports = class RouteManager {
     getPathEasinessScore(path, routes) {
         return path.reduce((acc, routeId) => {
             const route = routes.find(route => route.id === routeId);
-            let easiness = 1;
-            if (route.difficulty == 2) easiness = 1.5;
-            else if (route.difficulty == 3) easiness = 2;
-            return acc + route.length * easiness;
-        }, 0);
+            if (route.difficulty === 1) return acc + route.length;
+            else if (route.difficulty === 2) return acc + 1.5 * route.length;
+            else if (route.difficulty === 3) return acc + 2 * route.length;
+            return acc + 9999;
+        }, 0);  
     }
 
-    findShortestLengthPath(allPaths, map) {
+    findLiftsOnlyPath(allPaths, map) {
         if (allPaths.length === 0) return [];
-
-        return allPaths.reduce((shortest, path) => {
-            const shortestLength = this.getPathLength(shortest, map.routes);
-            const currentLength = this.getPathLength(path, map.routes);
-            return currentLength < shortestLength ? path : shortest;
-        }, allPaths[0]);
+        return allPaths.reduce((allLiftsPath, path) => {
+            const allLiftsPathLength = this.getLiftsCount(allLiftsPath, map.routes);
+            const currentLiftsLength = this.getLiftsCount(path, map.routes);
+            const currentSlopesLength = this.getSlopesCount(path, map.routes);
+            return currentLiftsLength > allLiftsPathLength && currentSlopesLength == 0 ? path : allLiftsPath;
+        }, []);
     }
 
     findLongestLengthPath(allPaths, map) {
@@ -118,7 +132,6 @@ module.exports = class RouteManager {
 
     findFastestPath(allPaths, map) {
         if (allPaths.length === 0) return [];
-
         return allPaths.reduce((shortest, path) => {
             const shortestLength = this.getPathTime(shortest, map.routes);
             const currentLength = this.getPathTime(path, map.routes);
@@ -159,20 +172,20 @@ module.exports = class RouteManager {
     calculateRoutes(map, startLocationId, endLocationId, difficultyLevels) {
         const allRoutePaths = this.findRoutePaths(map, startLocationId, endLocationId, difficultyLevels);
 
+        const liftsOnlyPath = this.findLiftsOnlyPath(allRoutePaths, map);
         const easiestPath = this.findEasiestPath(allRoutePaths, map);
         const shortestTimePath = this.findFastestPath(allRoutePaths, map);
-        const shortestLengthPath = this.findShortestLengthPath(allRoutePaths, map);
         const longestLengthPath = this.findLongestLengthPath(allRoutePaths, map);
 
-        const easiestPathResult = this.formatPathResult(1, "Easiest", easiestPath, map);
-        const shortestTimePathResult = this.formatPathResult(2, "Fastest", shortestTimePath, map);
-        const shortestLengthPathResult = this.formatPathResult(3, "Shortest Length", shortestLengthPath, map);
+        const liftsOnlyPathResult = this.formatPathResult(1, "Lifts Only", liftsOnlyPath, map);
+        const easiestPathResult = this.formatPathResult(2, "Easiest", easiestPath, map);
+        const shortestTimePathResult = this.formatPathResult(3, "Fastest", shortestTimePath, map);
         const longestLengthPathResult = this.formatPathResult(4, "Longest Length", longestLengthPath, map);
 
         return [
+            liftsOnlyPathResult,
             easiestPathResult,
             shortestTimePathResult,
-            shortestLengthPathResult,
             longestLengthPathResult
         ].filter(r => r.routes.length > 0);
     }
