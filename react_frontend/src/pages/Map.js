@@ -7,7 +7,7 @@ import { DRACOLoader } from "three/examples/jsm/loaders/DRACOLoader";
 import { RGBELoader } from 'three/examples/jsm/loaders/RGBELoader.js';
 import { throttle, displayRender } from '../utils/tool'
 import { fetchData } from '../api/request'
-import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, QuestionOutlined, ProfileOutlined, DragOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
+import { SearchOutlined, CloseOutlined, CaretUpOutlined, CaretDownOutlined, SwapOutlined, QuestionOutlined, ProfileOutlined, DragOutlined, CaretLeftOutlined, CheckCircleTwoTone, CloseCircleTwoTone, CaretRightOutlined, HomeFilled, FlagFilled, AimOutlined } from '@ant-design/icons';
 import { Flex, Cascader, FloatButton, Modal, Tabs, Drawer, Select, Card, Tooltip, Button, message, Spin } from 'antd';
 import RouteItem from '../components/RouteItem';
 import TipsBox from '../components/TipsBox';
@@ -293,6 +293,13 @@ export default function Map() {
     setPannelOpen(true);
   };
 
+  // Swap the start and end location
+  const swapLoc = () => {
+    let start = startLocation;
+    setStartLocation(endLocation);
+    setEndLocation(start);
+  }
+
   // Get loading status
   const getLoading = (index, status) => {
     const newLoadings = [...loadings];
@@ -400,12 +407,13 @@ export default function Map() {
         <Flex className="searchAreaBox" justify="center">
           <Flex className="searchArea" justify="center" wrap="wrap" gap="small">
             <Cascader
-              className='searchItem' expandTrigger="hover" placeholder="Select Start Loction" size="large"
+              className='searchLoItem' expandTrigger="hover" placeholder="Select Start Loction" size="large"
               options={options} value={startLocation} displayRender={displayRender}
               onChange={(value) => inputOptionsChange(value, 0)}
             />
+            <SwapOutlined onClick={() => { swapLoc() }} />
             <Cascader
-              className='searchItem' expandTrigger="hover" placeholder="Select End Loction" size="large"
+              className='searchLoItem' expandTrigger="hover" placeholder="Select End Loction" size="large"
               options={options} value={endLocation} displayRender={displayRender}
               onChange={(value) => inputOptionsChange(value, 1)}
             />

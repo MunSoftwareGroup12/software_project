@@ -14,6 +14,10 @@
     padding-bottom: 1rem;
 }
 
+.searchLoItem {
+    width: 45%;
+}
+
 .searchItem {
     width: 80%;
 }
@@ -40,6 +44,6 @@
     user-select: none;
 }
 
-.ant-spin-fullscreen{
+.ant-spin-fullscreen {
     backdrop-filter: blur(15px);
 }
