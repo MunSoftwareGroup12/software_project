@@ -13,8 +13,8 @@ import RouteItem from '../components/RouteItem';
 import TipsBox from '../components/TipsBox';
 import { difficultyOptions, options } from '../utils/test'
 import './Map.css';
-import originData from "../utils/iteration2_origin.json";
-import caculateData from "../utils/iteration2_caculate.json";
+// import originData from "../utils/iteration2_origin.json"; // use for local test
+// import calculateData from "../utils/iteration2_calculate.json"; // use for local test
 
 const renderer = new THREE.WebGLRenderer({
   antialias: true, // Anti-aliasing
@@ -32,7 +32,7 @@ export default function Map() {
   const [pannelOpen, setPannelOpen] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isTipsOpen, setIsTipsOpen] = useState(false);
-  const [selectRoute, setSelectRoute] = useState(1);
+  const [selectRoute, setSelectRoute] = useState(2);
   const sceneRef = useRef(null);
   const cameraRef = useRef(null);
   const containerRef = useRef(null);
@@ -312,7 +312,14 @@ export default function Map() {
     if (!Array.isArray(startLocation) || !Array.isArray(endLocation)) {
       messageApi.open({
         type: 'warning',
-        content: "Please complete your input before searching",
+        content: "Please complete both location fields to continue",
+      });
+      return;
+    }
+    if (startLocation[2] === endLocation[2]) {
+      messageApi.open({
+        type: 'warning',
+        content: "Please select different locations",
       });
       return;
     }
@@ -320,6 +327,7 @@ export default function Map() {
     try {
       let diff = (Array.isArray(difficulty) && difficulty.length > 0) ? difficulty.join('') : '123';
       const data = await fetchData(`https://mun-comp-6905-group-12-ski-routing-app-backend.vercel.app/calculate-routes?startLocationId=${startLocation[2]}&endLocationId=${endLocation[2]}&&difficulty=${diff}`);
+      // const data = calculateData;
       if (!data.length > 0) {
         throw new Error('Calculate fail!');
       }
